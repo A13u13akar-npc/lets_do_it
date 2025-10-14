@@ -12,9 +12,9 @@ class TodoService {
   Future<void> deleteTask(TodoTask task, BuildContext context) async {
     try {
       await task.delete();
-      Utils().successToast('Task marked as completed!', context);
+      Utils().successToast('Task Eliminated!', context);
     } catch (e) {
-      Utils().failureToast('Failed to mark task as completed: $e', context);
+      Utils().failureToast('Failed to eliminate the task: $e', context);
     }
   }
 

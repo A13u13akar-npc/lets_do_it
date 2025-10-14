@@ -5,13 +5,13 @@ part 'task_model.g.dart';
 @HiveType(typeId: 0)
 class TodoTask extends HiveObject {
   @HiveField(0)
-  String title; // Non-nullable
+  String title;
 
   @HiveField(1)
-  String? description; // Nullable
+  String? description;
 
   @HiveField(2)
-  DateTime createdAt; // Timestamp
+  DateTime createdAt;
 
   TodoTask(
       this.title, {

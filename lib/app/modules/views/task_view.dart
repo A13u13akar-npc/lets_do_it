@@ -209,33 +209,58 @@ class _TaskViewState extends State<TaskView> {
                         shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(12),
                         ),
-                        child: ListTile(
-                          title: Text(
-                            task.title,
-                            style: const TextStyle(
-                              fontWeight: FontWeight.bold,
-                              fontSize: 18,
-                            ),
-                          ),
-                          subtitle: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              if (task.description != null && task.description!.trim().isNotEmpty)
-                                Padding(
-                                  padding: const EdgeInsets.symmetric(vertical: 4),
-                                  child: Text(
-                                    task.description!,
-                                    style: const TextStyle(fontSize: 15),
+                        child: InkWell(
+                          onTap: () {
+                            Get.toNamed('/taskDetails', arguments: task);
+                          },
+                          borderRadius: BorderRadius.circular(12),
+                          child: ListTile(
+                            title: Hero(
+                              tag: 'title_${task.key}',
+                              child: Material(
+                                color: Colors.transparent,
+                                child: Text(
+                                  task.title,
+                                  style: const TextStyle(
+                                    fontWeight: FontWeight.bold,
+                                    fontSize: 18,
                                   ),
                                 ),
-                              Text(
-                                'Created: ${_formatDate(task.createdAt)}',
-                                style: const TextStyle(
-                                  fontSize: 12,
-                                  color: Colors.grey,
-                                ),
                               ),
-                            ],
+                            ),
+                            subtitle: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                if (task.description != null &&
+                                    task.description!.trim().isNotEmpty)
+                                  Hero(
+                                    tag: 'desc_${task.key}',
+                                    child: Material(
+                                      color: Colors.transparent,
+                                      child: Padding(
+                                        padding: const EdgeInsets.symmetric(vertical: 4),
+                                        child: Text(
+                                          task.description!,
+                                          style: const TextStyle(fontSize: 15),
+                                        ),
+                                      ),
+                                    ),
+                                  ),
+                                Hero(
+                                  tag: 'time_${task.key}',
+                                  child: Material(
+                                    color: Colors.transparent,
+                                    child: Text(
+                                      'Created: ${_formatDate(task.createdAt)}',
+                                      style: const TextStyle(
+                                        fontSize: 12,
+                                        color: Colors.grey,
+                                      ),
+                                    ),
+                                  ),
+                                ),
+                              ],
+                            ),
                           ),
                         ),
                       ),
@@ -243,14 +268,14 @@ class _TaskViewState extends State<TaskView> {
                   },
                 );
               }),
-            ),         ],
+            ),
+          ],
         ),
       ),
       floatingActionButton: FloatingActionButton(
         backgroundColor: customPurple,
         onPressed: () {
           Get.toNamed('/addTask');
-
         },
         child: const Icon(Icons.add, color: Colors.white),
       ),

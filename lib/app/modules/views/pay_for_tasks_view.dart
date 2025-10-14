@@ -55,13 +55,6 @@ class PayForTasksView extends StatelessWidget {
                   ExpandedButton(
                     text: 'Return',
                     onPressed: () {
-                      if (Get.isRegistered<PayForTasksView>()) {
-                        Get.delete<PayForTasksView>();
-                      } // Dispose the current PayForTasksView if registered
-                      if (Get.isRegistered<PayForTasksView>()) {
-                        Get.delete<PayForTasksView>();
-                      }
-
                       // Try disposing the previous screen as well (for example, AddTaskView)
                       if (Get.isRegistered<AddTaskView>()) {
                         Get.delete<AddTaskView>();

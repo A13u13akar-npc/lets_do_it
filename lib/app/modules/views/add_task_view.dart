@@ -41,6 +41,8 @@ class _AddTaskViewState extends State<AddTaskView> {
   }
 
   Future<void> _addTask() async {
+    FocusScope.of(context).unfocus();
+
     if (_isLoading) return; // prevent duplicate taps
     setState(() => _isLoading = true); // 👈 start loading
     try {
