@@ -1,6 +1,6 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
 
-part of 'todoModel.dart';
+part of 'task_model.dart';
 
 // **************************************************************************
 // TypeAdapterGenerator
@@ -18,24 +18,21 @@ class TodoTaskAdapter extends TypeAdapter<TodoTask> {
     };
     return TodoTask(
       fields[0] as String,
-      fields[1] as String,
-      fields[2] as String,
-      fields[3] as bool,
+      description: fields[1] as String?,
+      createdAt: fields[2] as DateTime?,
     );
   }
 
   @override
   void write(BinaryWriter writer, TodoTask obj) {
     writer
-      ..writeByte(4)
+      ..writeByte(3)
       ..writeByte(0)
       ..write(obj.title)
       ..writeByte(1)
-      ..write(obj.startTime)
+      ..write(obj.description)
       ..writeByte(2)
-      ..write(obj.endTime)
-      ..writeByte(3)
-      ..write(obj.isCompleted);
+      ..write(obj.createdAt);
   }
 
   @override

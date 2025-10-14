@@ -1,24 +1,23 @@
 import 'package:flutter/material.dart';
-import 'package:lets_do_it/app/modules/views/homeScreen.dart';
+import 'package:lets_do_it/app/modules/views/task_view.dart';
 
-class SplashScreen extends StatefulWidget {
-  const SplashScreen({super.key});
+class SplashView extends StatefulWidget {
+  const SplashView({super.key});
 
   @override
-  State<SplashScreen> createState() => _SplashScreenState();
+  State<SplashView> createState() => _SplashViewState();
 }
 
-class _SplashScreenState extends State<SplashScreen> {
+class _SplashViewState extends State<SplashView> {
   @override
   void initState() {
     super.initState();
-    // Delayed navigation to HomeScreen after 3 seconds
     Future.delayed(const Duration(seconds: 2), () {
       // Use `mounted` to check if the widget is still in the tree
       if (mounted) {
         Navigator.pushReplacement(
           context,
-          MaterialPageRoute(builder: (context) => HomeScreen()),
+          MaterialPageRoute(builder: (context) => TaskView()),
         );
       }
     });
@@ -30,10 +29,10 @@ class _SplashScreenState extends State<SplashScreen> {
       body: Container(
         decoration: const BoxDecoration(
           gradient: LinearGradient(
-            begin: Alignment.topRight,
-            end: Alignment.bottomLeft,
+            begin: Alignment.topLeft,
+            end: Alignment.bottomRight,
             colors: [
-              Color(0xFF5C3DF6),
+              Color(0xFF326AFF),
               Color(0xFF30ABF3),
             ],
           ),
@@ -42,7 +41,7 @@ class _SplashScreenState extends State<SplashScreen> {
           child: SizedBox(
             width: double.infinity, // Take full width
             child: Text(
-              'TO DO',
+              'Lets Do It 👊',
               style: TextStyle(
                 color: Colors.white,
                 fontSize: 40,

@@ -1,42 +1,59 @@
+import 'package:firebase_analytics/firebase_analytics.dart';
+import 'package:firebase_core/firebase_core.dart';
+import 'package:firebase_crashlytics/firebase_crashlytics.dart';
+import 'package:firebase_remote_config/firebase_remote_config.dart';
 import 'package:flutter/material.dart';
-import 'package:lets_do_it/app/data/model/todoModel.dart';
-import 'package:lets_do_it/core/theme/themeProvider.dart';
-import 'package:path_provider/path_provider.dart';
-import 'package:provider/provider.dart';
+import 'package:get/get.dart';
 import 'package:hive_flutter/hive_flutter.dart';
+import 'package:lets_do_it/app/bindings/todo_binding.dart';
+import 'package:lets_do_it/app/controllers/theme_controller.dart';
+import 'package:lets_do_it/app/data/model/task_model.dart';
+import 'package:lets_do_it/app/routes/app_views.dart';
+import 'package:lets_do_it/app/modules/views/splash_view.dart';
+import 'package:path_provider/path_provider.dart';
+import 'core/theme/theme_constants.dart';
 
-import 'app/modules/views/splashScreen.dart';
 
-void main() async {
+final FirebaseAnalytics analytics = FirebaseAnalytics.instance;
+
+Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
+  await Firebase.initializeApp();
   await Hive.initFlutter();
   Hive.registerAdapter(TodoTaskAdapter());
-  var appDocumentDir = await getApplicationDocumentsDirectory();
+  final appDocumentDir = await getApplicationDocumentsDirectory();
   await Hive.openBox<TodoTask>('tasks', path: appDocumentDir.path);
-
-  runApp(MyApp());
+  await Hive.openBox('settings');
+  final remoteConfig = FirebaseRemoteConfig.instance;
+  await remoteConfig.setDefaults(<String, dynamic>{'max_free_tasks': 2,});
+  final themeController = Get.put(ThemeController());
+  await FirebaseCrashlytics.instance.setCrashlyticsCollectionEnabled(true);
+  FlutterError.onError = FirebaseCrashlytics.instance.recordFlutterError;
+  FirebaseAnalytics.instance.setAnalyticsCollectionEnabled(true);
+  runApp(MyApp(themeController: themeController));
 }
 
 class MyApp extends StatelessWidget {
-  const MyApp({super.key});
+  final ThemeController themeController;
+  const MyApp({super.key, required this.themeController});
 
   @override
   Widget build(BuildContext context) {
-    return MultiProvider(
-      providers: [
-        ChangeNotifierProvider(create: (_) => ThemeProvider()),
+    return Obx(() {
+      return GetMaterialApp(
+        debugShowCheckedModeBanner: false,
+        title: 'Let’s Do It',
+        theme: lightTheme,
+        darkTheme: darkTheme,
+        themeMode: themeController.isDarkMode.value
+            ? ThemeMode.dark
+            : ThemeMode.light,
+        home: const SplashView(),
+        getPages: AppViews.routes,
+        initialBinding: TodoBinding(),navigatorObservers: [
+        FirebaseAnalyticsObserver(analytics: analytics),
       ],
-      child: Consumer<ThemeProvider>(
-        builder: (context, themeProvider, _) {
-          return MaterialApp(
-            debugShowCheckedModeBanner: false,
-            themeMode: themeProvider.themeMode,
-            theme: ThemeData.light(), // Provide your light theme here
-            darkTheme: ThemeData.dark(), // Provide your dark theme here
-            home: const SplashScreen(),
-          );
-        },
-      ),
-    );
+      );
+    });
   }
 }
