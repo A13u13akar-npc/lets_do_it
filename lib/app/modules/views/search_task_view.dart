@@ -51,6 +51,8 @@ class _SearchTaskViewState extends State<SearchTaskView> {
   @override
   void dispose() {
     _focusNode.unfocus();
+    _searchController.clear();
+    _controller.searchTasks('');
     _focusNode.dispose();
     _searchController.dispose();
     super.dispose();
