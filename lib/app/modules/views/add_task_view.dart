@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'package:hive/hive.dart';
+import 'package:lets_do_it/app/controllers/gemini_controller.dart';
 import 'package:lets_do_it/app/data/analytics/analytics_service.dart';
-import 'package:lets_do_it/app/data/gemini/gemini_services.dart';
 import 'package:lets_do_it/app/data/local/task_service.dart';
 import 'package:lets_do_it/app/data/model/task_model.dart';
 import 'package:lets_do_it/app/utils/utils.dart';
@@ -17,17 +18,25 @@ class AddTaskView extends StatefulWidget {
 
 class _AddTaskViewState extends State<AddTaskView> {
   final TodoService _todoService = TodoService();
+  final GeminiController _geminiController = Get.find<GeminiController>();
+
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
   final TextEditingController _titleController = TextEditingController();
   final TextEditingController _descriptionController = TextEditingController();
 
   bool _isLoading = false;
-  bool _isGenerating = false;
 
   @override
   void initState() {
     super.initState();
     _openBox();
+    ever(_geminiController.generatedTitle, (_) {
+      _titleController.text = _geminiController.generatedTitle.value;
+    });
+    ever(_geminiController.generatedDescription, (_) {
+      _descriptionController.text =
+          _geminiController.generatedDescription.value;
+    });
   }
 
   Future<void> _openBox() async {
@@ -36,8 +45,10 @@ class _AddTaskViewState extends State<AddTaskView> {
 
   Future<void> _addTask() async {
     FocusScope.of(context).unfocus();
-    if (_isLoading || _isGenerating) return;
+    if (_isLoading || _geminiController.isGenerating.value) return;
+
     setState(() => _isLoading = true);
+
     try {
       await _todoService.addTask(
         title: _titleController.text,
@@ -52,25 +63,17 @@ class _AddTaskViewState extends State<AddTaskView> {
     }
   }
 
-  Future<void> _generateTask() async {
-    setState(() => _isGenerating = true);
-
-    try {
-      final task = await GeminiService().generateTask();
-      setState(() {
-        _titleController.text = task['title'] ?? '';
-        _descriptionController.text = task['description'] ?? '';
-      });
-    } catch (e) {
-      Utils().failureToast('Error generating task: $e', context);
-    } finally {
-      if (mounted) setState(() => _isGenerating = false);
-    }
-  }
-
   void _clearForm() {
     _titleController.clear();
     _descriptionController.clear();
+    _geminiController.clearGeneratedTask();
+  }
+
+  @override
+  void dispose() {
+    _titleController.dispose();
+    _descriptionController.dispose();
+    super.dispose();
   }
 
   @override
@@ -84,88 +87,100 @@ class _AddTaskViewState extends State<AddTaskView> {
         key: _formKey,
         child: Padding(
           padding: const EdgeInsets.all(18.0),
-          child: Column(
-            children: [
-              Expanded(
-                child: SingleChildScrollView(
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.stretch,
-                    children: [
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          Text(
-                            'Add Task',
-                            style: theme.textTheme.titleLarge?.copyWith(
-                              fontWeight: FontWeight.w500,
-                            ),
-                          ),
-                          IconButton(
-                            onPressed: _isGenerating ? null : _generateTask,
-                            icon: const Icon(Icons.auto_awesome),
-                            tooltip: 'Generate with AI',
-                          ),
-                        ],
-                      ),
-                      const SizedBox(height: 20),
-                      Column(
-                        children: [
-                          Skeletonizer(
-                            enabled: _isGenerating,
-                            child: TextFormField(
-                              controller: _titleController,
-                              decoration: InputDecoration(
-                                labelText: 'Task Title *',
-                                border: OutlineInputBorder(
-                                  borderRadius: BorderRadius.circular(8.0),
-                                  borderSide: BorderSide.none,
-                                ),
-                                filled: true,
-                                fillColor: isDarkMode
-                                    ? Colors.grey.shade900
-                                    : Colors.grey.shade200,
-                                contentPadding: const EdgeInsets.all(18),
+          child: Obx(() {
+            final isGenerating = _geminiController.isGenerating.value;
+
+            return Column(
+              children: [
+                Expanded(
+                  child: SingleChildScrollView(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.stretch,
+                      children: [
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            Text(
+                              'Add Task',
+                              style: theme.textTheme.titleLarge?.copyWith(
+                                fontWeight: FontWeight.w500,
                               ),
                             ),
-                          ),
-                          const SizedBox(height: 20),
-                          Skeletonizer(
-                            enabled: _isGenerating,
-                            child: TextFormField(
-                              controller: _descriptionController,
-                              decoration: InputDecoration(
-                                labelText: 'Description (optional)',
-                                border: OutlineInputBorder(
-                                  borderRadius: BorderRadius.circular(8.0),
-                                  borderSide: BorderSide.none,
-                                ),
-                                filled: true,
-                                fillColor: isDarkMode
-                                    ? Colors.grey.shade900
-                                    : Colors.grey.shade200,
-                                contentPadding: const EdgeInsets.all(18),
-                              ),
-                              maxLines: 3,
+                            IconButton(
+                              onPressed: isGenerating
+                                  ? null
+                                  : _geminiController.generateTask,
+                              icon: const Icon(Icons.auto_awesome),
+                              tooltip: 'Generate with AI',
                             ),
-                          ),
-                        ],
-                      ),
-                    ],
+                          ],
+                        ),
+                        const SizedBox(height: 20),
+                        Column(
+                          children: [
+                            Skeletonizer(
+                              enabled: isGenerating,
+                              child: TextFormField(
+                                controller: _titleController,
+                                decoration: InputDecoration(
+                                  labelText: 'Task Title *',
+                                  border: OutlineInputBorder(
+                                    borderRadius: BorderRadius.circular(8.0),
+                                    borderSide: BorderSide.none,
+                                  ),
+                                  filled: true,
+                                  fillColor: isDarkMode
+                                      ? Colors.grey.shade900
+                                      : Colors.grey.shade200,
+                                  contentPadding: const EdgeInsets.all(18),
+                                ),
+                                validator: (value) {
+                                  if (value == null || value.trim().isEmpty) {
+                                    return 'Please enter a task title';
+                                  }
+                                  return null;
+                                },
+                              ),
+                            ),
+                            const SizedBox(height: 20),
+                            Skeletonizer(
+                              enabled: isGenerating,
+                              child: TextFormField(
+                                controller: _descriptionController,
+                                decoration: InputDecoration(
+                                  labelText: 'Description (optional)',
+                                  border: OutlineInputBorder(
+                                    borderRadius: BorderRadius.circular(8.0),
+                                    borderSide: BorderSide.none,
+                                  ),
+                                  filled: true,
+                                  fillColor: isDarkMode
+                                      ? Colors.grey.shade900
+                                      : Colors.grey.shade200,
+                                  contentPadding: const EdgeInsets.all(18),
+                                ),
+                                maxLines: 3,
+                              ),
+                            ),
+                          ],
+                        ),
+                      ],
+                    ),
                   ),
                 ),
-              ),
-              ExpandedButton(
-                text: _isLoading ? 'Creating...' : 'Create Task',
-                onPressed: () {
-                  if (_isLoading || _isGenerating) return;
-                  AnalyticsService().logCreateTaskButtonTap();
-                  if (_formKey.currentState?.validate() == true) {
-                    _addTask();
-                  }
-                },
-              ),
-            ],
-          ),
+                ExpandedButton(
+                  text: _isLoading ? 'Creating...' : 'Create Task',
+                  onPressed: () {
+                    if (_isLoading || isGenerating) return;
+                    AnalyticsService().logCreateTaskButtonTap();
+                    if (_formKey.currentState?.validate() == true) {
+                      _addTask();
+                    }
+                  },
+                ),
+              ],
+            );
+          }),
         ),
       ),
     );

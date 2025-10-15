@@ -6,6 +6,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:get/get.dart';
 import 'package:hive_flutter/hive_flutter.dart';
+import 'package:lets_do_it/app/bindings/gemini_binding.dart';
+import 'package:lets_do_it/app/bindings/theme_binding.dart';
 import 'package:lets_do_it/app/bindings/todo_binding.dart';
 import 'package:lets_do_it/app/controllers/theme_controller.dart';
 import 'package:lets_do_it/app/data/model/task_model.dart';
@@ -13,7 +15,6 @@ import 'package:lets_do_it/app/routes/app_views.dart';
 import 'package:lets_do_it/app/modules/views/splash_view.dart';
 import 'package:path_provider/path_provider.dart';
 import 'core/theme/theme_constants.dart';
-
 
 final FirebaseAnalytics analytics = FirebaseAnalytics.instance;
 
@@ -26,7 +27,7 @@ Future<void> main() async {
   await Hive.openBox<TodoTask>('tasks', path: appDocumentDir.path);
   await Hive.openBox('settings');
   final remoteConfig = FirebaseRemoteConfig.instance;
-  await remoteConfig.setDefaults(<String, dynamic>{'max_free_tasks': 2,});
+  await remoteConfig.setDefaults(<String, dynamic>{'max_free_tasks': 2});
   final themeController = Get.put(ThemeController());
   await FirebaseCrashlytics.instance.setCrashlyticsCollectionEnabled(true);
   FlutterError.onError = FirebaseCrashlytics.instance.recordFlutterError;
@@ -52,9 +53,12 @@ class MyApp extends StatelessWidget {
             : ThemeMode.light,
         home: const SplashView(),
         getPages: AppViews.routes,
-        initialBinding: TodoBinding(),navigatorObservers: [
-        FirebaseAnalyticsObserver(analytics: analytics),
-      ],
+        initialBinding: BindingsBuilder(() {
+          ThemeBinding().dependencies();
+          TodoBinding().dependencies();
+          GeminiBinding().dependencies();
+        }),
+        navigatorObservers: [FirebaseAnalyticsObserver(analytics: analytics)],
       );
     });
   }
