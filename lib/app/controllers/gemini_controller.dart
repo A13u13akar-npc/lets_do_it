@@ -1,3 +1,4 @@
+import 'dart:developer';
 import 'package:get/get.dart';
 import 'package:lets_do_it/app/data/gemini/gemini_services.dart';
 
@@ -12,6 +13,8 @@ class GeminiController extends GetxController {
     try {
       isGenerating.value = true;
       final result = await _geminiService.generateTask();
+
+      log("Response: $result",name: "gemini_testing");
       generatedTitle.value = result['title'] ?? '';
       generatedDescription.value = result['description'] ?? '';
     } catch (e) {

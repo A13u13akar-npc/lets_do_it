@@ -15,12 +15,14 @@ import 'package:lets_do_it/app/routes/app_views.dart';
 import 'package:lets_do_it/app/modules/views/splash_view.dart';
 import 'package:path_provider/path_provider.dart';
 import 'core/theme/theme_constants.dart';
+import 'package:device_preview/device_preview.dart';
+import 'firebase_options.dart';
 
 final FirebaseAnalytics analytics = FirebaseAnalytics.instance;
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  await Firebase.initializeApp();
+  await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
   await Hive.initFlutter();
   Hive.registerAdapter(TodoTaskAdapter());
   final appDocumentDir = await getApplicationDocumentsDirectory();
@@ -33,7 +35,13 @@ Future<void> main() async {
   FlutterError.onError = FirebaseCrashlytics.instance.recordFlutterError;
   FirebaseAnalytics.instance.setAnalyticsCollectionEnabled(true);
   await dotenv.load(fileName: ".env");
-  runApp(MyApp(themeController: themeController));
+  runApp(
+    DevicePreview(
+      // enabled: true,
+      enabled: false,
+      builder: (context) => MyApp(themeController: themeController),
+    ),
+  );
 }
 
 class MyApp extends StatelessWidget {

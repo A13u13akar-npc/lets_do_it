@@ -63,6 +63,7 @@ class _AddTaskViewState extends State<AddTaskView> {
     }
   }
 
+
   void _clearForm() {
     _titleController.clear();
     _descriptionController.clear();
@@ -107,6 +108,16 @@ class _AddTaskViewState extends State<AddTaskView> {
                               ),
                             ),
                             IconButton(
+                            //   onPressedssed: (){
+                            //
+                            //
+                            //   askGemini();
+                            //
+                            //
+                            //
+                            //
+                            //
+                            // },
                               onPressed: isGenerating
                                   ? null
                                   : _geminiController.generateTask,

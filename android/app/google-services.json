@@ -1,13 +1,13 @@
 {
   "project_info": {
-    "project_number": "315521246041",
-    "project_id": "letsdoit-b9a3a",
-    "storage_bucket": "letsdoit-b9a3a.firebasestorage.app"
+    "project_number": "366036520833",
+    "project_id": "letsdoit-864ce",
+    "storage_bucket": "letsdoit-864ce.firebasestorage.app"
   },
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:315521246041:android:badca0c8e7b0e3e48a2248",
+        "mobilesdk_app_id": "1:366036520833:android:da7c0db25925db0ffc2280",
         "android_client_info": {
           "package_name": "com.example.lets_do_it"
         }
@@ -15,7 +15,26 @@
       "oauth_client": [],
       "api_key": [
         {
-          "current_key": "AIzaSyCHYejOrXhgprv3MxvsnAXzJqteDS3ok5Y"
+          "current_key": "AIzaSyBnxC2kun3my-tPjnjTSSvf_h15QbiIc8c"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:366036520833:android:3dcf29d77846cef2fc2280",
+        "android_client_info": {
+          "package_name": "com.tech.lets_do_it"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBnxC2kun3my-tPjnjTSSvf_h15QbiIc8c"
         }
       ],
       "services": {
