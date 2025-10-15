@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:hive/hive.dart';
+import 'package:lets_do_it/app/controllers/analytics_controller.dart';
 import 'package:lets_do_it/app/controllers/gemini_controller.dart';
-import 'package:lets_do_it/app/data/analytics/analytics_service.dart';
 import 'package:lets_do_it/app/data/local/task_service.dart';
 import 'package:lets_do_it/app/data/model/task_model.dart';
 import 'package:lets_do_it/app/utils/utils.dart';
@@ -19,10 +19,10 @@ class AddTaskView extends StatefulWidget {
 class _AddTaskViewState extends State<AddTaskView> {
   final TodoService _todoService = TodoService();
   final GeminiController _geminiController = Get.find<GeminiController>();
-
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
   final TextEditingController _titleController = TextEditingController();
   final TextEditingController _descriptionController = TextEditingController();
+  final AnalyticsController _analyticsController = Get.find<AnalyticsController>();
 
   bool _isLoading = false;
 
@@ -108,16 +108,6 @@ class _AddTaskViewState extends State<AddTaskView> {
                               ),
                             ),
                             IconButton(
-                            //   onPressedssed: (){
-                            //
-                            //
-                            //   askGemini();
-                            //
-                            //
-                            //
-                            //
-                            //
-                            // },
                               onPressed: isGenerating
                                   ? null
                                   : _geminiController.generateTask,
@@ -183,7 +173,8 @@ class _AddTaskViewState extends State<AddTaskView> {
                   text: _isLoading ? 'Creating...' : 'Create Task',
                   onPressed: () {
                     if (_isLoading || isGenerating) return;
-                    AnalyticsService().logCreateTaskButtonTap();
+                    // AnalyticsService().logCreateTaskButtonTap();
+                    _analyticsController.logCreateTaskButtonTap();
                     if (_formKey.currentState?.validate() == true) {
                       _addTask();
                     }

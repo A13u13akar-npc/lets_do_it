@@ -6,6 +6,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:get/get.dart';
 import 'package:hive_flutter/hive_flutter.dart';
+import 'package:lets_do_it/app/bindings/analytics_binding.dart';
 import 'package:lets_do_it/app/bindings/gemini_binding.dart';
 import 'package:lets_do_it/app/bindings/remote_config_binding.dart';
 import 'package:lets_do_it/app/bindings/theme_binding.dart';
@@ -67,6 +68,7 @@ class MyApp extends StatelessWidget {
           TaskBinding().dependencies();
           GeminiBinding().dependencies();
           RemoteConfigBinding().dependencies();
+          AnalyticsBinding().dependencies();
         }),
         navigatorObservers: [FirebaseAnalyticsObserver(analytics: analytics)],
       );

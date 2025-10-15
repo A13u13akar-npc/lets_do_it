@@ -1,7 +1,6 @@
 import 'package:firebase_analytics/firebase_analytics.dart';
 
 class AnalyticsService {
-  // Singleton pattern — single instance throughout app
   static final AnalyticsService _instance = AnalyticsService._internal();
   factory AnalyticsService() => _instance;
   AnalyticsService._internal();
@@ -13,19 +12,14 @@ class AnalyticsService {
     required String eventName,
     Map<String, Object>? parameters,
   }) async {
-    await _analytics.logEvent(
-      name: eventName,
-      parameters: parameters,
-    );
+    await _analytics.logEvent(name: eventName, parameters: parameters);
   }
 
   /// Logs when the "Create Task" button is tapped
   Future<void> logCreateTaskButtonTap() async {
     await logEvent(
       eventName: 'create_task_button_tapped',
-      parameters: {
-        'timestamp': DateTime.now().toIso8601String(),
-      },
+      parameters: {'timestamp': DateTime.now().toIso8601String()},
     );
   }
 }

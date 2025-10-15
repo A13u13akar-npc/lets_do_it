@@ -1,4 +1,5 @@
 import 'package:get/get.dart';
+import 'package:lets_do_it/app/bindings/analytics_binding.dart';
 import 'package:lets_do_it/app/bindings/gemini_binding.dart';
 import 'package:lets_do_it/app/bindings/remote_config_binding.dart';
 import 'package:lets_do_it/app/bindings/task_binding.dart';
@@ -26,9 +27,10 @@ class AppViews {
       name: '/addTask',
       page: () => const AddTaskView(),
       bindings: [
-        GeminiBinding(),
         TaskBinding(),
+        GeminiBinding(),
         RemoteConfigBinding(),
+        AnalyticsBinding()
       ],
     ),
     GetPage(
