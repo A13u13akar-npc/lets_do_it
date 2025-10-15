@@ -1,4 +1,4 @@
-import 'package:firebase_crashlytics/firebase_crashlytics.dart';
+// import 'package:firebase_crashlytics/firebase_crashlytics.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
@@ -83,7 +83,7 @@ class _TaskViewState extends State<TaskView> {
             child: IconButton(
               icon: const Icon(Icons.search, size: 32),
               onPressed: () {
-                FirebaseCrashlytics.instance.crash();
+                // FirebaseCrashlytics.instance.crash();
               },
             ),
           ),

@@ -104,7 +104,7 @@ class _TaskDetailsViewState extends State<TaskDetailsView> {
 
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Task Details'),
+        title: const Text('Task Details ℹ️'),
         actions: [
           IconButton(
             icon: Icon(_isEditing ? Icons.close : Icons.edit),
