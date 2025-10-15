@@ -98,7 +98,9 @@ class _TaskDetailsViewState extends State<TaskDetailsView> {
 
   @override
   Widget build(BuildContext context) {
-    final formattedDate = DateFormat('MMM d, yyyy • hh:mm a').format(task.createdAt);
+    final formattedDate = DateFormat(
+      'MMM d, yyyy • hh:mm a',
+    ).format(task.createdAt);
     final theme = Theme.of(context);
     final isDark = theme.brightness == Brightness.dark;
 
@@ -133,15 +135,21 @@ class _TaskDetailsViewState extends State<TaskDetailsView> {
                           child: TextFormField(
                             controller: _titleController,
                             enabled: _isEditing,
-                            style: TextStyle(color: isDark ? Colors.white : Colors.black),
-                            decoration: const InputDecoration(labelText: 'Title'),
-                            validator: (v) =>
-                            (v == null || v.trim().isEmpty) ? 'Title cannot be empty' : null,
+                            style: TextStyle(
+                              color: isDark ? Colors.white : Colors.black,
+                            ),
+                            decoration: const InputDecoration(
+                              labelText: 'Title',
+                            ),
+                            validator: (v) => (v == null || v.trim().isEmpty)
+                                ? 'Title cannot be empty'
+                                : null,
                           ),
                         ),
                       ),
                       const SizedBox(height: 20),
-                      if (task.description != null && task.description!.trim().isNotEmpty)
+                      if (task.description != null &&
+                          task.description!.trim().isNotEmpty)
                         Hero(
                           tag: 'desc_${task.key}',
                           child: Material(
@@ -150,8 +158,12 @@ class _TaskDetailsViewState extends State<TaskDetailsView> {
                               controller: _descriptionController,
                               enabled: _isEditing,
                               maxLines: 3,
-                              style: TextStyle(color: isDark ? Colors.white : Colors.black),
-                              decoration: const InputDecoration(labelText: 'Description'),
+                              style: TextStyle(
+                                color: isDark ? Colors.white : Colors.black,
+                              ),
+                              decoration: const InputDecoration(
+                                labelText: 'Description',
+                              ),
                             ),
                           ),
                         ),
@@ -162,7 +174,9 @@ class _TaskDetailsViewState extends State<TaskDetailsView> {
                           color: Colors.transparent,
                           child: Text(
                             'Created: $formattedDate',
-                            style: theme.textTheme.bodyMedium?.copyWith(color: Colors.grey),
+                            style: theme.textTheme.bodyMedium?.copyWith(
+                              color: Colors.grey,
+                            ),
                           ),
                         ),
                       ),

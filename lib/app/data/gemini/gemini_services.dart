@@ -28,8 +28,12 @@ class GeminiService {
       headers: {'Content-Type': 'application/json'},
       body: jsonEncode({
         "contents": [
-          {"parts": [{"text": prompt}]}
-        ]
+          {
+            "parts": [
+              {"text": prompt},
+            ],
+          },
+        ],
       }),
     );
 
@@ -37,8 +41,6 @@ class GeminiService {
       try {
         final data = jsonDecode(response.body);
         String text = data['candidates'][0]['content']['parts'][0]['text'];
-
-        // Remove markdown-style code fences if present
         text = text
             .replaceAll(RegExp(r'```json', caseSensitive: false), '')
             .replaceAll('```', '')
@@ -51,7 +53,8 @@ class GeminiService {
       }
     } else {
       throw Exception(
-          'Gemini request failed: ${response.statusCode} ${response.body}');
+        'Gemini request failed: ${response.statusCode} ${response.body}',
+      );
     }
   }
 }

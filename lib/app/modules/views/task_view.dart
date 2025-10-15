@@ -94,9 +94,7 @@ class _TaskViewState extends State<TaskView> {
           padding: EdgeInsets.zero,
           children: <Widget>[
             const DrawerHeader(
-              decoration: BoxDecoration(
-                color: customPurple,
-              ),
+              decoration: BoxDecoration(color: customPurple),
               child: Center(
                 child: Text(
                   'Lets Do It 👊',
@@ -110,13 +108,15 @@ class _TaskViewState extends State<TaskView> {
             ),
             ListTile(
               title: const Text('Dark Mode'),
-              trailing: Obx(() => Switch(
-                value: themeController.isDarkMode.value,
-                onChanged: (value) {
-                  themeController.toggleTheme();
-                },
-                activeThumbColor: customPurple,
-              )),
+              trailing: Obx(
+                () => Switch(
+                  value: themeController.isDarkMode.value,
+                  onChanged: (value) {
+                    themeController.toggleTheme();
+                  },
+                  activeThumbColor: customPurple,
+                ),
+              ),
             ),
           ],
         ),
@@ -128,15 +128,15 @@ class _TaskViewState extends State<TaskView> {
           children: [
             Text(
               'Hello There 👋',
-              style: Theme.of(context).textTheme.headlineSmall?.copyWith(
-                fontWeight: FontWeight.w400,
-              ),
+              style: Theme.of(
+                context,
+              ).textTheme.headlineSmall?.copyWith(fontWeight: FontWeight.w400),
             ),
             Text(
               'Organize your plans for today',
-              style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                color: Colors.grey,
-              ),
+              style: Theme.of(
+                context,
+              ).textTheme.titleMedium?.copyWith(color: Colors.grey),
             ),
             const SizedBox(height: 20),
             const Divider(
@@ -148,9 +148,9 @@ class _TaskViewState extends State<TaskView> {
             const SizedBox(height: 20),
             Text(
               "Today's Tasks",
-              style: Theme.of(context).textTheme.headlineSmall?.copyWith(
-                fontWeight: FontWeight.w400,
-              ),
+              style: Theme.of(
+                context,
+              ).textTheme.headlineSmall?.copyWith(fontWeight: FontWeight.w400),
             ),
             const SizedBox(height: 6),
             Text(
@@ -238,7 +238,9 @@ class _TaskViewState extends State<TaskView> {
                                     child: Material(
                                       color: Colors.transparent,
                                       child: Padding(
-                                        padding: const EdgeInsets.symmetric(vertical: 4),
+                                        padding: const EdgeInsets.symmetric(
+                                          vertical: 4,
+                                        ),
                                         child: Text(
                                           task.description!,
                                           style: const TextStyle(fontSize: 15),
