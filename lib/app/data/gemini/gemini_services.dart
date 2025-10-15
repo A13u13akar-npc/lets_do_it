@@ -48,7 +48,7 @@ class GeminiService {
 
         final result = Map<String, String>.from(jsonDecode(text));
         return result;
-      } catch (e, st) {
+      } catch (e) {
         throw Exception('Failed to parse Gemini response.');
       }
     } else {
