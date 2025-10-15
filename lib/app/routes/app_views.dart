@@ -1,4 +1,6 @@
 import 'package:get/get.dart';
+import 'package:lets_do_it/app/bindings/gemini_binding.dart';
+import 'package:lets_do_it/app/bindings/remote_config_binding.dart';
 import 'package:lets_do_it/app/bindings/task_binding.dart';
 import 'package:lets_do_it/app/modules/views/add_task_view.dart';
 import 'package:lets_do_it/app/modules/views/search_task_view.dart';
@@ -14,16 +16,20 @@ class AppViews {
     GetPage(
       name: '/home',
       page: () => const HomeView(),
-      binding: TodoBinding(),
     ),
     GetPage(
       name: '/viewTask',
       page: () => const TaskView(),
-      binding: TodoBinding(),
+      binding: TaskBinding(),
     ),
     GetPage(
       name: '/addTask',
       page: () => const AddTaskView(),
+      bindings: [
+        GeminiBinding(),
+        TaskBinding(),
+        RemoteConfigBinding(),
+      ],
     ),
     GetPage(
       name: '/taskDetails',
@@ -36,7 +42,7 @@ class AppViews {
     GetPage(
       name: '/searchTasks',
       page: () => const SearchTaskView(),
-      binding: TodoBinding(),
+      binding: TaskBinding(),
     ),
   ];
 }

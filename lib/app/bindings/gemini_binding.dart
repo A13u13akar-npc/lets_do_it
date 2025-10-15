@@ -4,6 +4,6 @@ import 'package:lets_do_it/app/controllers/gemini_controller.dart';
 class GeminiBinding extends Bindings {
   @override
   void dependencies() {
-    Get.lazyPut(() => GeminiController(), fenix: true);
+    Get.lazyPut(() => GeminiController());
   }
 }

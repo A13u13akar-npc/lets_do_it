@@ -1,9 +1,9 @@
 import 'package:get/get.dart';
 import 'package:lets_do_it/app/controllers/task_controller.dart';
 
-class TodoBinding extends Bindings {
+class TaskBinding extends Bindings {
   @override
   void dependencies() {
-    Get.lazyPut<TodoTaskController>(() => TodoTaskController());
+    Get.lazyPut<TodoTaskController>(() => TodoTaskController(), fenix: true);
   }
 }

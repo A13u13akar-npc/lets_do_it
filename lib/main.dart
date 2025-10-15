@@ -7,6 +7,7 @@ import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:get/get.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 import 'package:lets_do_it/app/bindings/gemini_binding.dart';
+import 'package:lets_do_it/app/bindings/remote_config_binding.dart';
 import 'package:lets_do_it/app/bindings/theme_binding.dart';
 import 'package:lets_do_it/app/bindings/task_binding.dart';
 import 'package:lets_do_it/app/controllers/theme_controller.dart';
@@ -63,8 +64,9 @@ class MyApp extends StatelessWidget {
         getPages: AppViews.routes,
         initialBinding: BindingsBuilder(() {
           ThemeBinding().dependencies();
-          TodoBinding().dependencies();
+          TaskBinding().dependencies();
           GeminiBinding().dependencies();
+          RemoteConfigBinding().dependencies();
         }),
         navigatorObservers: [FirebaseAnalyticsObserver(analytics: analytics)],
       );
