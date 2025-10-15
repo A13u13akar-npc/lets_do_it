@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
 import 'package:lets_do_it/app/controllers/theme_controller.dart';
+import 'package:lets_do_it/app/widgets/task_card.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:lets_do_it/app/controllers/todo_controller.dart';
 import 'package:lets_do_it/app/data/model/task_model.dart';
@@ -83,7 +84,7 @@ class _TaskViewState extends State<TaskView> {
             child: IconButton(
               icon: const Icon(Icons.search, size: 32),
               onPressed: () {
-                // FirebaseCrashlytics.instance.crash();
+                Get.toNamed('/searchTasks');
               },
             ),
           ),
@@ -174,98 +175,17 @@ class _TaskViewState extends State<TaskView> {
                     ),
                   );
                 }
-
                 return ListView.builder(
                   itemCount: allTasks.length,
                   itemBuilder: (context, index) {
                     final task = allTasks[index];
-                    return Dismissible(
-                      key: Key(task.key.toString()),
-                      background: ClipRRect(
-                        borderRadius: BorderRadius.circular(12),
-                        child: Container(
-                          color: Colors.green,
-                          alignment: Alignment.centerRight,
-                          padding: const EdgeInsets.only(right: 20.0),
-                          child: const Icon(
-                            Icons.done_all_rounded,
-                            color: Colors.white,
-                            size: 36,
-                          ),
-                        ),
-                      ),
-                      direction: DismissDirection.horizontal,
-                      confirmDismiss: (direction) async {
-                        final confirmed = await _confirmDelete(context);
-                        return confirmed;
-                      },
-                      onDismissed: (direction) async {
+                    return TaskCard(
+                      task: task,
+                      onConfirmDismiss: () => _confirmDelete(context),
+                      onDismissed: () async {
                         await _controller.deleteTask(task, context);
                         Utils().successToast("Task Completed!", context);
                       },
-                      child: Card(
-                        elevation: 2,
-                        margin: const EdgeInsets.symmetric(vertical: 8),
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(12),
-                        ),
-                        child: InkWell(
-                          onTap: () {
-                            Get.toNamed('/taskDetails', arguments: task);
-                          },
-                          borderRadius: BorderRadius.circular(12),
-                          child: ListTile(
-                            title: Hero(
-                              tag: 'title_${task.key}',
-                              child: Material(
-                                color: Colors.transparent,
-                                child: Text(
-                                  task.title,
-                                  style: const TextStyle(
-                                    fontWeight: FontWeight.bold,
-                                    fontSize: 18,
-                                  ),
-                                ),
-                              ),
-                            ),
-                            subtitle: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                if (task.description != null &&
-                                    task.description!.trim().isNotEmpty)
-                                  Hero(
-                                    tag: 'desc_${task.key}',
-                                    child: Material(
-                                      color: Colors.transparent,
-                                      child: Padding(
-                                        padding: const EdgeInsets.symmetric(
-                                          vertical: 4,
-                                        ),
-                                        child: Text(
-                                          task.description!,
-                                          style: const TextStyle(fontSize: 15),
-                                        ),
-                                      ),
-                                    ),
-                                  ),
-                                Hero(
-                                  tag: 'time_${task.key}',
-                                  child: Material(
-                                    color: Colors.transparent,
-                                    child: Text(
-                                      'Created: ${_formatDate(task.createdAt)}',
-                                      style: const TextStyle(
-                                        fontSize: 12,
-                                        color: Colors.grey,
-                                      ),
-                                    ),
-                                  ),
-                                ),
-                              ],
-                            ),
-                          ),
-                        ),
-                      ),
                     );
                   },
                 );

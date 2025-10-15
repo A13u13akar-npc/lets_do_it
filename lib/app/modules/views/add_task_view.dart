@@ -96,7 +96,9 @@ class _AddTaskViewState extends State<AddTaskView> {
                         children: [
                           Text(
                             'Add Task',
-                            style: theme.textTheme.titleLarge?.copyWith(fontWeight: FontWeight.w500),
+                            style: theme.textTheme.titleLarge?.copyWith(
+                              fontWeight: FontWeight.w500,
+                            ),
                           ),
                           IconButton(
                             onPressed: _isGenerating ? null : _generateTask,
@@ -106,11 +108,11 @@ class _AddTaskViewState extends State<AddTaskView> {
                         ],
                       ),
                       const SizedBox(height: 20),
-                      Skeletonizer(
-                        enabled: _isGenerating,
-                        child: Column(
-                          children: [
-                            TextFormField(
+                      Column(
+                        children: [
+                          Skeletonizer(
+                            enabled: _isGenerating,
+                            child: TextFormField(
                               controller: _titleController,
                               decoration: InputDecoration(
                                 labelText: 'Task Title *',
@@ -119,18 +121,17 @@ class _AddTaskViewState extends State<AddTaskView> {
                                   borderSide: BorderSide.none,
                                 ),
                                 filled: true,
-                                fillColor: isDarkMode ? Colors.grey.shade900 : Colors.grey.shade200,
+                                fillColor: isDarkMode
+                                    ? Colors.grey.shade900
+                                    : Colors.grey.shade200,
                                 contentPadding: const EdgeInsets.all(18),
                               ),
-                              validator: (value) {
-                                if (value == null || value.trim().isEmpty) {
-                                  return 'Please enter a task title';
-                                }
-                                return null;
-                              },
                             ),
-                            const SizedBox(height: 20),
-                            TextFormField(
+                          ),
+                          const SizedBox(height: 20),
+                          Skeletonizer(
+                            enabled: _isGenerating,
+                            child: TextFormField(
                               controller: _descriptionController,
                               decoration: InputDecoration(
                                 labelText: 'Description (optional)',
@@ -139,13 +140,15 @@ class _AddTaskViewState extends State<AddTaskView> {
                                   borderSide: BorderSide.none,
                                 ),
                                 filled: true,
-                                fillColor: isDarkMode ? Colors.grey.shade900 : Colors.grey.shade200,
+                                fillColor: isDarkMode
+                                    ? Colors.grey.shade900
+                                    : Colors.grey.shade200,
                                 contentPadding: const EdgeInsets.all(18),
                               ),
                               maxLines: 3,
                             ),
-                          ],
-                        ),
+                          ),
+                        ],
                       ),
                     ],
                   ),

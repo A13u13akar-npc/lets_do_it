@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:hive_flutter/hive_flutter.dart';
+import 'package:intl/intl.dart';
 import 'package:lets_do_it/app/data/model/task_model.dart';
 import 'package:lets_do_it/app/data/remote/remote_config_service.dart';
 import 'package:lets_do_it/app/utils/utils.dart';
@@ -39,8 +40,9 @@ class TodoService {
       }
 
       final existingTask = box.values.firstWhere(
-            (task) => task.title == title,
-        orElse: () => TodoTask(title, description: '', createdAt: DateTime.now()),
+        (task) => task.title == title,
+        orElse: () =>
+            TodoTask(title, description: '', createdAt: DateTime.now()),
       );
 
       if (existingTask.key != null && existingTask.title == title) {
@@ -98,4 +100,35 @@ class TodoService {
     return Hive.box<TodoTask>('tasks');
   }
 
+  Future<List<TodoTask>> searchTasks(String query) async {
+    final box = await getTaskBox();
+    if (query.trim().isEmpty) return box.values.toList();
+
+    final lowerQuery = query.toLowerCase();
+
+    final dateFormats = [
+      DateFormat('MMM d, yyyy – h:mm a'),
+      DateFormat('MMM d, yyyy'),
+      DateFormat('MMM d'),
+      DateFormat('yyyy-MM-dd'),
+      DateFormat('dd/MM/yyyy'),
+      DateFormat('h:mm a'),
+    ];
+
+    return box.values.where((task) {
+      final titleMatch = task.title.toLowerCase().contains(lowerQuery);
+      final descMatch = (task.description ?? '').toLowerCase().contains(
+        lowerQuery,
+      );
+
+      final dateStrings = dateFormats
+          .map((f) => f.format(task.createdAt).toLowerCase())
+          .toList();
+      final dateMatch = dateStrings.any(
+        (formatted) => formatted.contains(lowerQuery),
+      );
+
+      return titleMatch || descMatch || dateMatch;
+    }).toList();
+  }
 }

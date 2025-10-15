@@ -13,7 +13,6 @@ class TodoTaskController extends GetxController {
     _loadTasks();
   }
 
-
   Future<void> _loadTasks() async {
     final box = await _todoService.getTaskBox();
     tasks.assignAll(box.values.toList());
@@ -37,5 +36,10 @@ class TodoTaskController extends GetxController {
   Future<void> deleteTask(TodoTask task, BuildContext context) async {
     await _todoService.deleteTask(task, context);
     tasks.remove(task);
+  }
+
+  Future<void> searchTasks(String query) async {
+    final results = await _todoService.searchTasks(query);
+    tasks.assignAll(results);
   }
 }
