@@ -12,7 +12,7 @@ class TodoService {
   Future<void> deleteTask(TodoTask task, BuildContext context) async {
     try {
       await task.delete();
-      Utils().successToast('Task Eliminated!', context);
+      // Utils().successToast('Task Eliminated!', context);
     } catch (e) {
       Utils().failureToast('Failed to eliminate the task: $e', context);
     }
@@ -90,4 +90,12 @@ class TodoService {
       Utils().failureToast(e.toString(), context);
     }
   }
+
+  Future<Box<TodoTask>> getTaskBox() async {
+    if (!Hive.isBoxOpen('tasks')) {
+      await Hive.openBox<TodoTask>('tasks');
+    }
+    return Hive.box<TodoTask>('tasks');
+  }
+
 }

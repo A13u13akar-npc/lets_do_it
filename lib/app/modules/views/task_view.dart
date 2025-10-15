@@ -200,8 +200,8 @@ class _TaskViewState extends State<TaskView> {
                         return confirmed;
                       },
                       onDismissed: (direction) async {
-                        await _controller.deleteTask(task);
-                        Utils().successToast("Task deleted", context);
+                        await _controller.deleteTask(task, context);
+                        Utils().successToast("Task Completed!", context);
                       },
                       child: Card(
                         elevation: 2,
