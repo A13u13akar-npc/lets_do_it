@@ -87,7 +87,8 @@ class _SearchTaskViewState extends State<SearchTaskView> {
       body: Padding(
         padding: const EdgeInsets.only(left: 8.0, top: 8.0),
         child: Obx(() {
-          final List<TodoTask> filteredTasks = _controller.tasks.toList();
+          final List<TodoTask> filteredTasks = _controller.tasks.reversed
+              .toList();
 
           if (filteredTasks.isEmpty) {
             return const Center(
