@@ -1,5 +1,5 @@
 import 'package:get/get.dart';
-import 'package:lets_do_it/app/bindings/todo_binding.dart';
+import 'package:lets_do_it/app/bindings/task_binding.dart';
 import 'package:lets_do_it/app/modules/views/add_task_view.dart';
 import 'package:lets_do_it/app/modules/views/search_task_view.dart';
 import 'package:lets_do_it/app/modules/views/task_view.dart';

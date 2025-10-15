@@ -8,7 +8,7 @@ import 'package:get/get.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 import 'package:lets_do_it/app/bindings/gemini_binding.dart';
 import 'package:lets_do_it/app/bindings/theme_binding.dart';
-import 'package:lets_do_it/app/bindings/todo_binding.dart';
+import 'package:lets_do_it/app/bindings/task_binding.dart';
 import 'package:lets_do_it/app/controllers/theme_controller.dart';
 import 'package:lets_do_it/app/data/model/task_model.dart';
 import 'package:lets_do_it/app/routes/app_views.dart';

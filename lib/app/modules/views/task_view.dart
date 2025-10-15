@@ -5,7 +5,7 @@ import 'package:intl/intl.dart';
 import 'package:lets_do_it/app/controllers/theme_controller.dart';
 import 'package:lets_do_it/app/widgets/task_card.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:lets_do_it/app/controllers/todo_controller.dart';
+import 'package:lets_do_it/app/controllers/task_controller.dart';
 import 'package:lets_do_it/app/data/model/task_model.dart';
 import 'package:lets_do_it/app/utils/utils.dart';
 import 'package:lets_do_it/core/theme/theme_constants.dart';
