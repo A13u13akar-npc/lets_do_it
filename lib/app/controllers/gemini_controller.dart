@@ -1,6 +1,6 @@
 import 'dart:developer';
 import 'package:get/get.dart';
-import 'package:lets_do_it/app/data/gemini/gemini_services.dart';
+import 'package:lets_do_it/app/data/gemini_services.dart';
 
 class GeminiController extends GetxController {
   final GeminiService _geminiService = GeminiService();

@@ -3,21 +3,17 @@ import 'package:firebase_remote_config/firebase_remote_config.dart';
 class RemoteConfigService {
   final FirebaseRemoteConfig _remoteConfig = FirebaseRemoteConfig.instance;
 
-  /// Initialize remote config defaults
   Future<void> initialize() async {
     await _remoteConfig.setConfigSettings(
       RemoteConfigSettings(
         fetchTimeout: const Duration(seconds: 10),
-        minimumFetchInterval: Duration.zero, // force fresh fetch (for testing)
+        minimumFetchInterval: Duration.zero,
       ),
     );
 
-    await _remoteConfig.setDefaults(<String, dynamic>{
-      'max_free_tasks': 2, // fallback default
-    });
+    await _remoteConfig.setDefaults(<String, dynamic>{'max_free_tasks': 2});
   }
 
-  /// Fetch latest config values from Firebase
   Future<bool> fetchAndActivate() async {
     try {
       return await _remoteConfig.fetchAndActivate();
@@ -26,7 +22,6 @@ class RemoteConfigService {
     }
   }
 
-  /// Get max free tasks limit
   Future<int> getTaskLimit() async {
     await initialize();
     await fetchAndActivate();
@@ -34,8 +29,8 @@ class RemoteConfigService {
     return limit;
   }
 
-  /// Get value by key (for other future use cases)
-  String getString(String key) => _remoteConfig.getString(key);
-  int getInt(String key) => _remoteConfig.getInt(key);
-  bool getBool(String key) => _remoteConfig.getBool(key);
+  Future<bool> getToggleRewardTaskAd() async {
+    await fetchAndActivate();
+    return _remoteConfig.getBool('toggle_reward_task_ad');
+  }
 }

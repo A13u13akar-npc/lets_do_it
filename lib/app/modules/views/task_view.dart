@@ -1,4 +1,3 @@
-// import 'package:firebase_crashlytics/firebase_crashlytics.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
@@ -10,18 +9,18 @@ import 'package:lets_do_it/app/data/model/task_model.dart';
 import 'package:lets_do_it/app/utils/utils.dart';
 import 'package:lets_do_it/core/theme/theme_constants.dart';
 
-class TaskView extends StatefulWidget {
-  const TaskView({super.key});
+class TaskListView extends StatefulWidget {
+  const TaskListView({super.key});
 
   @override
-  _TaskViewState createState() => _TaskViewState();
+  _TaskListViewState createState() => _TaskListViewState();
 }
 
-class _TaskViewState extends State<TaskView> {
+class _TaskListViewState extends State<TaskListView> {
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
   late SharedPreferences _prefs;
   bool _isDarkMode = false;
-  final TodoTaskController _controller = Get.find<TodoTaskController>();
+  final TaskController _controller = Get.find<TaskController>();
 
   @override
   void initState() {

@@ -1,9 +1,9 @@
 import 'package:get/get.dart';
 import 'package:flutter/material.dart';
 import 'package:lets_do_it/app/data/model/task_model.dart';
-import 'package:lets_do_it/app/data/local/task_service.dart';
+import 'package:lets_do_it/app/data/task_service.dart';
 
-class TodoTaskController extends GetxController {
+class TaskController extends GetxController {
   final TodoService _todoService = TodoService();
   final RxList<TodoTask> tasks = <TodoTask>[].obs;
 

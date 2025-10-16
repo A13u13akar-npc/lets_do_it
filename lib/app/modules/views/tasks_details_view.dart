@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
-import 'package:lets_do_it/app/data/local/task_service.dart';
 import 'package:lets_do_it/app/data/model/task_model.dart';
+import 'package:lets_do_it/app/data/task_service.dart';
 import 'package:lets_do_it/app/utils/utils.dart';
 import 'package:lets_do_it/app/widgets/expanded_button.dart';
 

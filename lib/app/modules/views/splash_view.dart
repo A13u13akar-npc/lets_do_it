@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:lets_do_it/app/modules/views/task_view.dart';
+import 'package:get/get.dart';
 
 class SplashView extends StatefulWidget {
   const SplashView({super.key});
@@ -13,12 +13,8 @@ class _SplashViewState extends State<SplashView> {
   void initState() {
     super.initState();
     Future.delayed(const Duration(seconds: 2), () {
-      // Use `mounted` to check if the widget is still in the tree
       if (mounted) {
-        Navigator.pushReplacement(
-          context,
-          MaterialPageRoute(builder: (context) => TaskView()),
-        );
+        Get.offNamed('/viewTask');
       }
     });
   }

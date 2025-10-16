@@ -1,5 +1,5 @@
 import 'package:get/get.dart';
-import 'package:lets_do_it/app/data/remote/remote_config_service.dart';
+import 'package:lets_do_it/app/data/remote_config_service.dart';
 import 'package:lets_do_it/app/utils/utils.dart';
 import 'package:firebase_core/firebase_core.dart';
 
@@ -28,7 +28,7 @@ class RemoteConfigController extends GetxController {
         maxFreeTasks.value = limit;
         // Utils().successToast('Remote config updated', Get.context!);
       } else {
-        Utils().failureToast('Failed to fetch remote config', Get.context!);
+        // Utils().failureToast('Failed to fetch remote config', Get.context!);
       }
     } catch (e) {
       Utils().failureToast('Remote Config Error: $e', Get.context!);

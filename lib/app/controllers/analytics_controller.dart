@@ -1,5 +1,5 @@
 import 'package:get/get.dart';
-import 'package:lets_do_it/app/data/analytics/analytics_service.dart';
+import 'package:lets_do_it/app/data/analytics_service.dart';
 
 class AnalyticsController extends GetxController {
   final AnalyticsService _analyticsService = AnalyticsService();

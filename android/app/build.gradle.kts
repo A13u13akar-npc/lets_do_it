@@ -52,4 +52,5 @@ dependencies {
     implementation("com.google.firebase:firebase-crashlytics-ndk")
     implementation("com.google.firebase:firebase-analytics")
     implementation("com.google.firebase:firebase-ai")
+    implementation("com.google.android.gms:play-services-ads:24.7.0")
 }

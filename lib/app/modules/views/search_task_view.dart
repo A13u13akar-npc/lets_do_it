@@ -13,7 +13,7 @@ class SearchTaskView extends StatefulWidget {
 }
 
 class _SearchTaskViewState extends State<SearchTaskView> {
-  final TodoTaskController _controller = Get.find<TodoTaskController>();
+  final TaskController _controller = Get.find<TaskController>();
   final TextEditingController _searchController = TextEditingController();
   final FocusNode _focusNode = FocusNode();
 
