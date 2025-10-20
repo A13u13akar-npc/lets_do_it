@@ -1,29 +1,18 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
-class SplashView extends StatefulWidget {
+class SplashView extends StatelessWidget {
   const SplashView({super.key});
 
   @override
-  State<SplashView> createState() => _SplashViewState();
-}
-
-class _SplashViewState extends State<SplashView> {
-  @override
-  void initState() {
-    super.initState();
-    Future.delayed(const Duration(seconds: 2), () {
-      if (mounted) {
-        Get.offNamed('/viewTask');
-      }
-    });
-  }
-
-  @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      body: Container(
-        decoration: const BoxDecoration(
+    Future.delayed(const Duration(seconds: 1), () {
+      Get.offNamed('/viewTask');
+    });
+
+    return const Scaffold(
+      body: DecoratedBox(
+        decoration: BoxDecoration(
           gradient: LinearGradient(
             begin: Alignment.topLeft,
             end: Alignment.bottomRight,
@@ -33,9 +22,9 @@ class _SplashViewState extends State<SplashView> {
             ],
           ),
         ),
-        child: const Center(
+        child: Center(
           child: SizedBox(
-            width: double.infinity, // Take full width
+            width: double.infinity,
             child: Text(
               'Lets Do It 👊',
               style: TextStyle(
@@ -43,7 +32,7 @@ class _SplashViewState extends State<SplashView> {
                 fontSize: 40,
                 fontWeight: FontWeight.bold,
               ),
-              textAlign: TextAlign.center, // Center align the text
+              textAlign: TextAlign.center,
             ),
           ),
         ),

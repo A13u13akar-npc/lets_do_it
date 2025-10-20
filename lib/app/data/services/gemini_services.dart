@@ -3,17 +3,11 @@ import 'package:firebase_ai/firebase_ai.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 
 class GeminiService {
-  final GenerativeModel _model = FirebaseAI.googleAI(
+  static final GenerativeModel _model = FirebaseAI.googleAI(
     auth: FirebaseAuth.instance,
   ).generativeModel(model: 'gemini-2.5-flash');
 
-  Future<Map<String, String>> generateTask() async {
-    final model = FirebaseAI.googleAI().generativeModel(
-      model: 'gemini-2.5-flash',
-
-      generationConfig: GenerationConfig(responseMimeType: 'application/json'),
-    );
-
+  static Future<Map<String, String>> generateTask() async {
     final prompt = '''
     You are a creative task generator. 
     Generate a unique, random to-do task each time. The task should vary in topic, tone, and style — 
@@ -32,8 +26,7 @@ class GeminiService {
     - No explanations or markdown formatting.
     ''';
 
-    final response = await model.generateContent([Content.text(prompt)]);
-
+    final response = await _model.generateContent([Content.text(prompt)]);
     final text = response.text;
 
     if (text == null || text.isEmpty) {
@@ -51,5 +44,4 @@ class GeminiService {
       throw Exception('Failed to parse Gemini response: $e');
     }
   }
-
 }

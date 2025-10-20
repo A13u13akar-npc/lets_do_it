@@ -3,9 +3,6 @@ import 'package:get/get.dart';
 import 'package:hive/hive.dart';
 
 class ThemeController extends GetxController {
-  static const String _boxName = 'settings';
-  static const String _themeKey = 'isDarkMode';
-
   final RxBool isDarkMode = false.obs;
 
   @override
@@ -15,15 +12,15 @@ class ThemeController extends GetxController {
   }
 
   Future<void> _loadTheme() async {
-    final box = await Hive.openBox(_boxName);
-    isDarkMode.value = box.get(_themeKey, defaultValue: false);
+    final box = await Hive.openBox('settings');
+    isDarkMode.value = box.get('isDarkMode', defaultValue: false);
     _updateThemeMode();
   }
 
   void toggleTheme() async {
     isDarkMode.value = !isDarkMode.value;
-    final box = await Hive.openBox(_boxName);
-    await box.put(_themeKey, isDarkMode.value);
+    final box = await Hive.openBox('isDarkMode');
+    await box.put('isDarkMode', isDarkMode.value);
     _updateThemeMode();
   }
 

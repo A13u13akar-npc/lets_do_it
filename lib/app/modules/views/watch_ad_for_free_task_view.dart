@@ -1,111 +1,9 @@
-// import 'package:flutter/material.dart';
-// import 'package:get/get.dart';
-// import 'package:google_mobile_ads/google_mobile_ads.dart';
-// import 'package:lets_do_it/app/data/ad_service.dart';
-// import 'package:lets_do_it/app/data/task_service.dart';
-// import 'package:lets_do_it/app/data/remote_config_service.dart';
-// import 'package:lets_do_it/app/utils/utils.dart';
-// import 'package:lets_do_it/app/widgets/expanded_button.dart';
-// import 'package:skeletonizer/skeletonizer.dart';
-//
-// class WatchAdForFreeTaskView extends StatefulWidget {
-//   const WatchAdForFreeTaskView({super.key});
-//
-//   @override
-//   State<WatchAdForFreeTaskView> createState() => _WatchAdForFreeTaskViewState();
-// }
-//
-// class _WatchAdForFreeTaskViewState extends State<WatchAdForFreeTaskView> {
-//   final TodoService _todoService = TodoService();
-//
-//   @override
-//   void initState() {
-//     super.initState();
-//     AdService.init(); // initialize ads on view load
-//   }
-//
-//   Future<int> _getLimit() async {
-//     final remoteConfigService = RemoteConfigService();
-//     return await remoteConfigService.getTaskLimit();
-//   }
-//
-//   @override
-//   Widget build(BuildContext context) {
-//     // unpack task data passed as arguments
-//     final args = Get.arguments as Map<String, dynamic>?;
-//     final String title = args?['title'] ?? '';
-//     final String? description = args?['description'];
-//
-//     return Scaffold(
-//       appBar: AppBar(title: const Text("Plan Limit Reached 😕")),
-//       body: Padding(
-//         padding: const EdgeInsets.all(20.0),
-//         child: FutureBuilder<int>(
-//           future: _getLimit(),
-//           builder: (context, snapshot) {
-//             final isLoading = snapshot.connectionState == ConnectionState.waiting;
-//             final hasError = snapshot.hasError;
-//             final taskLimit = snapshot.data ?? 2;
-//
-//             return Column(
-//               mainAxisAlignment: MainAxisAlignment.center,
-//               children: [
-//                 const SizedBox(height: 40),
-//                 Text(
-//                   hasError
-//                       ? 'Failed to load task limit 😕'
-//                       : "You've reached your free tasks limit 🎯",
-//                   style: Theme.of(context).textTheme.headlineSmall?.copyWith(
-//                     fontWeight: FontWeight.bold,
-//                   ),
-//                   textAlign: TextAlign.center,
-//                 ),
-//                 const SizedBox(height: 16),
-//                 Skeletonizer(
-//                   enabled: isLoading,
-//                   child: Text(
-//                     hasError
-//                         ? 'Something went wrong fetching your task limit.'
-//                         : "You can manage up to $taskLimit tasks for free.\n\n"
-//                         "Don't worry! You can watch an ad for a free task!",
-//                     style: const TextStyle(fontSize: 16, color: Colors.grey),
-//                     textAlign: TextAlign.center,
-//                   ),
-//                 ),
-//                 const SizedBox(height: 40),
-//                 ExpandedButton(
-//                   text: 'Watch Ad',
-//                   onPressed: () {
-//                     AdService.showRewardedInterstitialAd(
-//                       onReward: (RewardItem reward) async {
-//                         await _todoService.addTask(
-//                           title: title,
-//                           description: description,
-//                           context: context,
-//                           clearFormCallback: () {},
-//                           ignoreLimit: true,
-//                         );
-//                         Utils().successToast('Rewarded Task added successfully!', context);
-//                         Get.offAllNamed('/viewTask');
-//                       },
-//                     );
-//                   },
-//                 ),
-//               ],
-//             );
-//           },
-//         ),
-//       ),
-//     );
-//   }
-// }
-
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:google_mobile_ads/google_mobile_ads.dart';
-import 'package:lets_do_it/app/data/ad_service.dart';
-import 'package:lets_do_it/app/data/task_service.dart';
-import 'package:lets_do_it/app/data/remote_config_service.dart';
+import 'package:lets_do_it/app/data/services/ad_service.dart';
+import 'package:lets_do_it/app/data/services/remote_config_service.dart';
+import 'package:lets_do_it/app/data/services/task_service.dart';
 import 'package:lets_do_it/app/utils/utils.dart';
 import 'package:lets_do_it/app/widgets/expanded_button.dart';
 import 'package:skeletonizer/skeletonizer.dart';
@@ -118,18 +16,13 @@ class WatchAdForFreeTaskView extends StatefulWidget {
 }
 
 class _WatchAdForFreeTaskViewState extends State<WatchAdForFreeTaskView> {
-  final TodoService _todoService = TodoService();
+  final TaskService _todoService = TaskService();
   bool _isAdShowing = false;
 
   @override
   void initState() {
     super.initState();
     AdService.init();
-  }
-
-  Future<int> _getLimit() async {
-    final remoteConfigService = RemoteConfigService();
-    return await remoteConfigService.getTaskLimit();
   }
 
   Future<void> _handleAdReward(
@@ -148,7 +41,6 @@ class _WatchAdForFreeTaskViewState extends State<WatchAdForFreeTaskView> {
             clearFormCallback: () {},
             ignoreLimit: true,
           );
-          Utils().successToast('Rewarded Task added successfully!', context);
           Get.close(2);
           Get.toNamed('/viewTask');
         },
@@ -174,7 +66,7 @@ class _WatchAdForFreeTaskViewState extends State<WatchAdForFreeTaskView> {
       body: Padding(
         padding: const EdgeInsets.all(20.0),
         child: FutureBuilder<int>(
-          future: _getLimit(),
+          future: RemoteConfigService.getTaskLimit(),
           builder: (context, snapshot) {
             final isLoading =
                 snapshot.connectionState == ConnectionState.waiting;

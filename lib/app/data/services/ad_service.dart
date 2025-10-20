@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:google_mobile_ads/google_mobile_ads.dart';
-import 'package:lets_do_it/app/data/remote_config_service.dart';
+import 'package:lets_do_it/app/data/services/remote_config_service.dart';
 import 'package:lets_do_it/app/utils/utils.dart';
 import 'package:lets_do_it/core/ads/ad_helper.dart';
 
@@ -8,10 +8,7 @@ class AdService {
   static RewardedInterstitialAd? _rewardedInterstitialAd;
 
   static Future<void> init() async {
-    await MobileAds.instance.initialize();
-    await MobileAds.instance.updateRequestConfiguration(
-      RequestConfiguration(testDeviceIds: ['CEEF47957310535EA6DDA54886009607']),
-    );
+
     loadRewardedInterstitialAd();
   }
 
@@ -44,8 +41,7 @@ class AdService {
     required BuildContext context,
     required void Function(RewardItem) onReward,
   }) async {
-    final remoteConfigService = RemoteConfigService();
-    final bool isAdEnabled = await remoteConfigService.getToggleRewardTaskAd();
+    final bool isAdEnabled = await RemoteConfigService.getToggleRewardTaskAd();
 
     if (!isAdEnabled) {
       Utils().failureToast(

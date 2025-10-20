@@ -1,9 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:lets_do_it/app/controllers/task_controller.dart';
-import 'package:lets_do_it/app/data/model/task_model.dart';
-import 'package:lets_do_it/app/utils/utils.dart';
 import 'package:lets_do_it/app/widgets/task_card.dart';
+import 'package:lets_do_it/app/data/services/task_service.dart';
 
 class SearchTaskView extends StatefulWidget {
   const SearchTaskView({super.key});
@@ -13,49 +12,39 @@ class SearchTaskView extends StatefulWidget {
 }
 
 class _SearchTaskViewState extends State<SearchTaskView> {
-  final TaskController _controller = Get.find<TaskController>();
-  final TextEditingController _searchController = TextEditingController();
-  final FocusNode _focusNode = FocusNode();
+  final taskService = TaskService();
+  final searchController = TextEditingController();
+  final focusNode = FocusNode();
+  final taskController = Get.find<TaskController>();
 
   @override
   void initState() {
     super.initState();
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      FocusScope.of(context).requestFocus(_focusNode);
+    WidgetsBinding.instance.addPostFrameCallback((_) async {
+      FocusScope.of(Get.context!).requestFocus(focusNode);
+      await taskController.fetchTasks();
+      await taskController.searchTasks('');
     });
-    _controller.searchTasks('');
   }
 
-  Future<bool?> _confirmDelete(BuildContext context) {
+  Future<bool?> confirmDelete() {
     return showDialog<bool>(
-      context: context,
-      builder: (BuildContext context) {
-        return AlertDialog(
-          title: const Text("Please Confirm"),
-          content: const Text("This action can’t be undone!"),
-          actions: <Widget>[
-            TextButton(
-              onPressed: () => Navigator.of(context).pop(false),
-              child: const Text("CANCEL"),
-            ),
-            TextButton(
-              onPressed: () => Navigator.of(context).pop(true),
-              child: const Text("COMPLETE"),
-            ),
-          ],
-        );
-      },
+      context: Get.context!,
+      builder: (_) => AlertDialog(
+        title: const Text("Please Confirm"),
+        content: const Text("This action can’t be undone!"),
+        actions: [
+          TextButton(
+            onPressed: () => Get.back(result: false),
+            child: const Text("CANCEL"),
+          ),
+          TextButton(
+            onPressed: () => Get.back(result: true),
+            child: const Text("COMPLETE"),
+          ),
+        ],
+      ),
     );
-  }
-
-  @override
-  void dispose() {
-    _focusNode.unfocus();
-    _searchController.clear();
-    _controller.searchTasks('');
-    _focusNode.dispose();
-    _searchController.dispose();
-    super.dispose();
   }
 
   @override
@@ -64,9 +53,11 @@ class _SearchTaskViewState extends State<SearchTaskView> {
       appBar: AppBar(
         titleSpacing: 0,
         title: TextField(
-          controller: _searchController,
-          focusNode: _focusNode,
-          onChanged: (value) => _controller.searchTasks(value),
+          controller: searchController,
+          focusNode: focusNode,
+          onChanged: (value) async {
+            await taskController.searchTasks(value);
+          },
           decoration: InputDecoration(
             hintText: 'Search tasks...',
             border: InputBorder.none,
@@ -78,42 +69,44 @@ class _SearchTaskViewState extends State<SearchTaskView> {
         actions: [
           IconButton(
             icon: const Icon(Icons.clear),
-            onPressed: () {
-              _searchController.clear();
-              _controller.searchTasks('');
-              FocusScope.of(context).requestFocus(_focusNode);
+            onPressed: () async {
+              searchController.clear();
+              await taskController.searchTasks('');
+              FocusScope.of(context).requestFocus(focusNode);
             },
           ),
         ],
       ),
-      body: Padding(
-        padding: const EdgeInsets.only(left: 8.0, top: 8.0),
-        child: Obx(() {
-          final List<TodoTask> filteredTasks = _controller.tasks.reversed
-              .toList();
+      body: Obx(() {
+        final tasks = taskController.filteredTasks;
+        if (tasks.isEmpty) {
+          return const Center(
+            child: Text('No tasks found', style: TextStyle(fontSize: 16)),
+          );
+        }
 
-          if (filteredTasks.isEmpty) {
-            return const Center(
-              child: Text('No tasks found', style: TextStyle(fontSize: 16)),
-            );
-          }
-
-          return ListView.builder(
-            itemCount: filteredTasks.length,
-            itemBuilder: (context, index) {
-              final task = filteredTasks[index];
+        return RefreshIndicator(
+          onRefresh: () async {
+            await taskController.fetchTasks();
+            await taskController.searchTasks(searchController.text);
+          },
+          child: ListView.builder(
+            padding: const EdgeInsets.only(left: 8.0, top: 8.0),
+            itemCount: tasks.length,
+            itemBuilder: (_, index) {
+              final task = tasks[index];
               return TaskCard(
                 task: task,
-                onConfirmDismiss: () => _confirmDelete(context),
+                onConfirmDismiss: confirmDelete,
                 onDismissed: () async {
-                  await _controller.deleteTask(task, context);
-                  Utils().successToast("Task Completed!", context);
+                  await taskController.deleteTask(task);
+                  await taskController.searchTasks(searchController.text);
                 },
               );
             },
-          );
-        }),
-      ),
+          ),
+        );
+      }),
     );
   }
 }

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
+import 'package:lets_do_it/app/controllers/task_controller.dart';
 import 'package:lets_do_it/app/data/model/task_model.dart';
 
 class TaskCard extends StatelessWidget {
@@ -21,6 +22,8 @@ class TaskCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final TaskController taskController = Get.find<TaskController>();
+
     return Dismissible(
       key: Key(task.key.toString()),
       background: ClipRRect(
@@ -40,7 +43,12 @@ class TaskCard extends StatelessWidget {
         margin: const EdgeInsets.symmetric(vertical: 8),
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
         child: InkWell(
-          onTap: () => Get.toNamed('/taskDetails', arguments: task),
+          onTap: () async {
+            final result = await Get.toNamed('/taskDetails', arguments: task);
+            if (result == true) {
+              await taskController.fetchTasks();
+            }
+          },
           borderRadius: BorderRadius.circular(12),
           child: ListTile(
             title: Hero(

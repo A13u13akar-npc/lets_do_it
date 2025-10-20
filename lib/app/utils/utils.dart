@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
@@ -15,6 +17,21 @@ class Utils {
       borderRadius: 8,
       duration: const Duration(seconds: 2),
     );
+  }
+
+ static Future<bool> checkInternetConnection() async {
+    bool value = false;
+    try {
+      final result = await InternetAddress.lookup('example.com');
+      if (result.isNotEmpty && result[0].rawAddress.isNotEmpty) {
+        print('connected');
+        value = true;
+      }
+    } on SocketException catch (_) {
+      print('not connected');
+      value = false;
+    }
+    return value;
   }
 
   void successToast(String message, BuildContext context) {
