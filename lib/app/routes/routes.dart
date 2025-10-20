@@ -19,7 +19,7 @@ class Routes {
     ),
     GetPage(name: '/addTask', page: () => const AddTaskView()),
     GetPage(name: '/taskDetails', page: () => const TaskDetailsView()),
-    GetPage(name: '/pay', page: () => const WatchAdForFreeTaskView()),
+    GetPage(name: '/watchAd', page: () => const WatchAdForFreeTaskView()),
     GetPage(name: '/searchTasks', page: () => const SearchTaskView()),
   ];
 }

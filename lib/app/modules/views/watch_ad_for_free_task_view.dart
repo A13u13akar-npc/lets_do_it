@@ -1,75 +1,61 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:google_mobile_ads/google_mobile_ads.dart';
+import 'package:lets_do_it/app/controllers/task_controller.dart';
 import 'package:lets_do_it/app/data/services/ad_service.dart';
 import 'package:lets_do_it/app/data/services/remote_config_service.dart';
-import 'package:lets_do_it/app/data/services/task_service.dart';
 import 'package:lets_do_it/app/utils/utils.dart';
 import 'package:lets_do_it/app/widgets/expanded_button.dart';
 import 'package:skeletonizer/skeletonizer.dart';
 
-class WatchAdForFreeTaskView extends StatefulWidget {
+class WatchAdForFreeTaskView extends StatelessWidget {
   const WatchAdForFreeTaskView({super.key});
 
-  @override
-  State<WatchAdForFreeTaskView> createState() => _WatchAdForFreeTaskViewState();
-}
-
-class _WatchAdForFreeTaskViewState extends State<WatchAdForFreeTaskView> {
-  final TaskService _todoService = TaskService();
-  bool _isAdShowing = false;
-
-  @override
-  void initState() {
-    super.initState();
-    AdService.init();
-  }
 
   Future<void> _handleAdReward(
-    String title,
-    String? description,
-    BuildContext context,
-  ) async {
-    setState(() => _isAdShowing = true);
+      TaskController taskController,
+      String title,
+      String? description,
+      BuildContext context,
+      ) async {
     try {
-      AdService.showRewardedInterstitialAd(
+      await AdService.showRewardedInterstitialAd(
         onReward: (RewardItem reward) async {
-          await _todoService.addTask(
+          await taskController.addTask(
             title: title,
-            description: description,
-            context: context,
-            clearFormCallback: () {},
+            description: description ?? '',
+            clearFormCallback: taskController.clearForm,
             ignoreLimit: true,
           );
+          await taskController.fetchTasks();
           Get.close(2);
-          Get.toNamed('/viewTask');
+          Utils().successToast('Rewarded a task!', Get.context!);
         },
-        context: context /**/,
       );
     } catch (_) {
       Utils().failureToast(
         'Failed to show ad. Please try again later.',
         context,
       );
-      setState(() => _isAdShowing = false);
     }
   }
 
   @override
   Widget build(BuildContext context) {
-    final args = Get.arguments as Map<String, dynamic>?;
-    final String title = args?['title'] ?? '';
-    final String? description = args?['description'];
+    final taskController = Get.find<TaskController>();
+    // AdService.init();
+    final args = Get.arguments as Map<String, dynamic>? ?? {};
+    final title = args['title'] ?? '';
+    final description = args['description'] as String?;
 
     return Scaffold(
       appBar: AppBar(title: const Text("Plan Limit Reached 😕")),
       body: Padding(
-        padding: const EdgeInsets.all(20.0),
+        padding: const EdgeInsets.all(20),
         child: FutureBuilder<int>(
           future: RemoteConfigService.getTaskLimit(),
           builder: (context, snapshot) {
-            final isLoading =
-                snapshot.connectionState == ConnectionState.waiting;
+            final isLoading = snapshot.connectionState == ConnectionState.waiting;
             final hasError = snapshot.hasError;
             final taskLimit = snapshot.data ?? 2;
 
@@ -93,21 +79,24 @@ class _WatchAdForFreeTaskViewState extends State<WatchAdForFreeTaskView> {
                     hasError
                         ? 'Something went wrong fetching your task limit.'
                         : "You can manage up to $taskLimit tasks for free.\n\n"
-                              "Don't worry! You can watch an ad for a free task!",
+                        "Don't worry! You can watch an ad for a free task!",
                     style: const TextStyle(fontSize: 16, color: Colors.grey),
                     textAlign: TextAlign.center,
                   ),
                 ),
                 const SizedBox(height: 40),
-                Skeletonizer(
-                  enabled: _isAdShowing,
-                  child: ExpandedButton(
-                    text: _isAdShowing ? 'Showing Ad...' : 'Watch Ad',
-                    onPressed: _isAdShowing
-                        ? () {}
-                        : () => _handleAdReward(title, description, context),
-                  ),
-                ),
+                Obx(() {
+                  final isCreating = taskController.isCreatingTask.value;
+                  return Skeletonizer(
+                    enabled: isCreating,
+                    child: ExpandedButton(
+                      text: isCreating ? 'Showing Ad...' : 'Watch Ad',
+                      onPressed: isCreating
+                          ? () {}
+                          : () => _handleAdReward(taskController, title, description, context),
+                    ),
+                  );
+                }),
               ],
             );
           },

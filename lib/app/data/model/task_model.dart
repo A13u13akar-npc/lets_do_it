@@ -13,11 +13,8 @@ class TodoTask extends HiveObject {
   @HiveField(2)
   DateTime createdAt;
 
-  TodoTask(
-      this.title, {
-        this.description,
-        DateTime? createdAt,
-      }) : createdAt = createdAt ?? DateTime.now();
+  TodoTask(this.title, {this.description, DateTime? createdAt})
+    : createdAt = createdAt ?? DateTime.now();
 
   factory TodoTask.fromJson(Map<String, dynamic> json) {
     return TodoTask(

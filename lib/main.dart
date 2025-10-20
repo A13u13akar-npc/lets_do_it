@@ -9,6 +9,7 @@ import 'package:google_mobile_ads/google_mobile_ads.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 import 'package:lets_do_it/app/controllers/theme_controller.dart';
 import 'package:lets_do_it/app/data/model/task_model.dart';
+import 'package:lets_do_it/app/data/services/ad_service.dart';
 import 'package:lets_do_it/app/routes/routes.dart';
 import 'package:path_provider/path_provider.dart';
 import 'core/theme/theme_constants.dart';
@@ -41,6 +42,7 @@ Future<void> main() async {
     RequestConfiguration(testDeviceIds: ['CEEF47957310535EA6DDA54886009607']),
   );
   MobileAds.instance.initialize();
+  await AdService.init();
 
   runApp(
     DevicePreview(

@@ -1,5 +1,4 @@
 import 'dart:async';
-import 'dart:developer';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:hive_flutter/hive_flutter.dart';
@@ -24,19 +23,13 @@ class TaskService {
     return Hive.box<TodoTask>('tasks');
   }
 
-  Future<void> deleteTask(TodoTask task, BuildContext context) async {
-    try {
+  Future<void> deleteTask(TodoTask task) async {
       await task.delete();
-      Utils().successToast('Task deleted', context);
-    } catch (e) {
-      Utils().failureToast('Failed to delete: $e', context);
-    }
   }
 
   Future<void> addTask({
     required String title,
     String? description,
-    required BuildContext context,
     required VoidCallback clearFormCallback,
     bool ignoreLimit = false,
   }) async {
@@ -49,10 +42,12 @@ class TaskService {
           : await RemoteConfigService.getTaskLimit();
 
       if (!ignoreLimit && box.length >= (taskLimit ?? 0)) {
-        Get.toNamed(
-          '/pay',
-          arguments: {'title': title, 'description': description},
-        );
+        if (Get.currentRoute != '/watchAd') {
+          Get.toNamed(
+            '/watchAd',
+            arguments: {'title': title, 'description': description},
+          );
+        }
         return;
       }
 
@@ -64,17 +59,17 @@ class TaskService {
 
       if (existingTask.key != null && existingTask.title == title) {
         final confirmUpdate = await showDialog<bool>(
-          context: context,
+          context: Get.context!,
           builder: (_) => AlertDialog(
             title: const Text('Confirm Update'),
             content: const Text('Task exists. Update it?'),
             actions: [
               TextButton(
-                onPressed: () => Navigator.pop(context, false),
+                onPressed: () => Navigator.pop(Get.context!, false),
                 child: const Text('Cancel'),
               ),
               TextButton(
-                onPressed: () => Navigator.pop(context, true),
+                onPressed: () => Navigator.pop(Get.context!, true),
                 child: const Text('Update'),
               ),
             ],
@@ -86,7 +81,7 @@ class TaskService {
             ..description = description
             ..createdAt = DateTime.now();
           await existingTask.save();
-          Utils().successToast('Task updated successfully!', context);
+          Utils().successToast('Task updated successfully!', Get.context!);
           clearFormCallback();
         }
       } else {
@@ -96,11 +91,11 @@ class TaskService {
           createdAt: DateTime.now(),
         );
         await box.add(task);
-        Utils().successToast('Task added successfully!', context);
+        Utils().successToast('Task added successfully!', Get.context!);
         clearFormCallback();
       }
     } catch (e) {
-      Utils().failureToast(e.toString(), context);
+      Utils().failureToast(e.toString(), Get.context!);
     }
   }
 

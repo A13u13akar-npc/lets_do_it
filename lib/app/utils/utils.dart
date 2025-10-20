@@ -1,25 +1,34 @@
 import 'dart:io';
-
 import 'package:flutter/material.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:get/get.dart';
 
 class Utils {
   int millisecond = 300;
 
   void failureToast(String message, BuildContext context) {
-    Get.snackbar(
-      'Error',
-      message,
-      snackPosition: SnackPosition.TOP,
+    Fluttertoast.showToast(
+      msg: message,
+      toastLength: Toast.LENGTH_SHORT,
+      gravity: ToastGravity.TOP,
       backgroundColor: Colors.red.shade600,
-      colorText: Colors.white,
-      margin: const EdgeInsets.all(12),
-      borderRadius: 8,
-      duration: const Duration(seconds: 2),
+      textColor: Colors.white,
+      fontSize: 16.0,
     );
   }
 
- static Future<bool> checkInternetConnection() async {
+  void successToast(String message, BuildContext context) {
+    Fluttertoast.showToast(
+      msg: message,
+      toastLength: Toast.LENGTH_SHORT,
+      gravity: ToastGravity.TOP,
+      backgroundColor: Colors.green.shade600,
+      textColor: Colors.white,
+      fontSize: 16.0,
+    );
+  }
+
+  static Future<bool> checkInternetConnection() async {
     bool value = false;
     try {
       final result = await InternetAddress.lookup('example.com');
@@ -34,16 +43,28 @@ class Utils {
     return value;
   }
 
-  void successToast(String message, BuildContext context) {
-    Get.snackbar(
-      'Success',
-      message,
-      snackPosition: SnackPosition.TOP,
-      backgroundColor: Colors.green.shade600,
-      colorText: Colors.white,
-      margin: const EdgeInsets.all(12),
-      borderRadius: 8,
-      duration: const Duration(seconds: 2),
+  static Future<bool?> confirmDialog({
+    required String title,
+    required String message,
+    String cancelText = "CANCEL",
+    String confirmText = "CONFIRM",
+  }) {
+    return showDialog<bool>(
+      context: Get.context!,
+      builder: (_) => AlertDialog(
+        title: Text(title),
+        content: Text(message),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.of(Get.context!).pop(false),
+            child: Text(cancelText),
+          ),
+          TextButton(
+            onPressed: () => Navigator.of(Get.context!).pop(true),
+            child: Text(confirmText),
+          ),
+        ],
+      ),
     );
   }
 }

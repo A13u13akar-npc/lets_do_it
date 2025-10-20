@@ -1,4 +1,4 @@
-import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'package:google_mobile_ads/google_mobile_ads.dart';
 import 'package:lets_do_it/app/data/services/remote_config_service.dart';
 import 'package:lets_do_it/app/utils/utils.dart';
@@ -8,7 +8,6 @@ class AdService {
   static RewardedInterstitialAd? _rewardedInterstitialAd;
 
   static Future<void> init() async {
-
     loadRewardedInterstitialAd();
   }
 
@@ -38,7 +37,6 @@ class AdService {
   }
 
   static Future<void> showRewardedInterstitialAd({
-    required BuildContext context,
     required void Function(RewardItem) onReward,
   }) async {
     final bool isAdEnabled = await RemoteConfigService.getToggleRewardTaskAd();
@@ -46,7 +44,7 @@ class AdService {
     if (!isAdEnabled) {
       Utils().failureToast(
         'Ad feature temporarily disabled. Please try again later.',
-        context,
+        Get.context!,
       );
       return;
     }
@@ -54,7 +52,7 @@ class AdService {
     if (_rewardedInterstitialAd == null) {
       Utils().failureToast(
         'Ad not ready yet. Please try again shortly.',
-        context,
+        Get.context!,
       );
       loadRewardedInterstitialAd();
       return;

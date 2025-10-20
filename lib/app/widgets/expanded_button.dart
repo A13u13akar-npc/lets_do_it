@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:lets_do_it/core/theme/theme_constants.dart'; // for customPurple
+import 'package:lets_do_it/core/theme/theme_constants.dart';
 
 class ExpandedButton extends StatelessWidget {
   final String text;

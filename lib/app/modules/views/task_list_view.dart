@@ -2,31 +2,12 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:lets_do_it/app/controllers/task_controller.dart';
 import 'package:lets_do_it/app/controllers/theme_controller.dart';
+import 'package:lets_do_it/app/utils/utils.dart';
 import 'package:lets_do_it/app/widgets/task_card.dart';
 import 'package:lets_do_it/core/theme/theme_constants.dart';
 
 class TaskListView extends GetView<TaskController> {
   const TaskListView({super.key});
-
-  Future<bool?> _confirmDelete(BuildContext context) {
-    return showDialog<bool>(
-      context: context,
-      builder: (_) => AlertDialog(
-        title: const Text("Please Confirm"),
-        content: const Text("This action can't be undone!"),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.of(context).pop(false),
-            child: const Text("CANCEL"),
-          ),
-          TextButton(
-            onPressed: () => Navigator.of(context).pop(true),
-            child: const Text("COMPLETE"),
-          ),
-        ],
-      ),
-    );
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -95,12 +76,12 @@ class TaskListView extends GetView<TaskController> {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Text('Hello There 👋',
-                style: Theme.of(context)
+                style: Theme.of(Get.context!)
                     .textTheme
                     .headlineSmall
                     ?.copyWith(fontWeight: FontWeight.w400)),
             Text('Organize your plans for today',
-                style: Theme.of(context)
+                style: Theme.of(Get.context!)
                     .textTheme
                     .titleMedium
                     ?.copyWith(color: Colors.grey)),
@@ -108,13 +89,13 @@ class TaskListView extends GetView<TaskController> {
             const Divider(color: Colors.grey, thickness: 1),
             const SizedBox(height: 20),
             Text("Today's Tasks",
-                style: Theme.of(context)
+                style: Theme.of(Get.context!)
                     .textTheme
                     .headlineSmall
                     ?.copyWith(fontWeight: FontWeight.w400)),
             const SizedBox(height: 6),
             Text("💡 Tip: Swipe horizontally to complete or delete a task",
-                style: Theme.of(context)
+                style: Theme.of(Get.context!)
                     .textTheme
                     .bodySmall
                     ?.copyWith(color: Colors.grey, fontStyle: FontStyle.italic)),
@@ -135,8 +116,11 @@ class TaskListView extends GetView<TaskController> {
                   itemBuilder: (_, index) {
                     final task = tasks[index];
                     return TaskCard(
-                      task: task,
-                      onConfirmDismiss: () => _confirmDelete(context),
+                      taskKey: task.key,
+                      onConfirmDismiss: () => Utils.confirmDialog(
+                        title: "Please Confirm",
+                        message: "This action can't be undone!",
+                      ),
                       onDismissed: () async {
                         await controller.deleteTask(task);
                       },

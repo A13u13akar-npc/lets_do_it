@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:lets_do_it/app/controllers/task_controller.dart';
+import 'package:lets_do_it/app/controllers/theme_controller.dart';
 import 'package:lets_do_it/app/data/services/analytics_service.dart';
 import 'package:lets_do_it/app/widgets/expanded_button.dart';
 import 'package:skeletonizer/skeletonizer.dart';
@@ -10,15 +11,18 @@ class AddTaskView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final themeController = Get.find<ThemeController>();
     final theme = Theme.of(context);
-    final isDarkMode = theme.brightness == Brightness.dark;
     final formKey = GlobalKey<FormState>();
     final taskController = Get.find<TaskController>();
 
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      taskController.clearForm();
+    });
+
     return PopScope(
       onPopInvokedWithResult: (value, direction) async {
-        taskController.titleController.clear();
-        taskController.descriptionController.clear();
+        taskController.clearForm();
       },
       child: Scaffold(
         appBar: AppBar(title: const Text('Add Tasks 😼')),
@@ -56,10 +60,14 @@ class AddTaskView extends StatelessWidget {
                         const SizedBox(height: 20),
                         Obx(() {
                           ever(taskController.generatedTitle, (value) {
-                            if (value.isNotEmpty) taskController.titleController.text = value;
+                            if (value.isNotEmpty) {
+                              taskController.titleController.text = value;
+                            }
                           });
                           ever(taskController.generatedDescription, (value) {
-                            if (value.isNotEmpty) taskController.descriptionController.text = value;
+                            if (value.isNotEmpty) {
+                              taskController.descriptionController.text = value;
+                            }
                           });
                           return Column(
                             children: [
@@ -74,7 +82,7 @@ class AddTaskView extends StatelessWidget {
                                       borderSide: BorderSide.none,
                                     ),
                                     filled: true,
-                                    fillColor: isDarkMode
+                                    fillColor: themeController.isDarkMode.value
                                         ? Colors.grey.shade900
                                         : Colors.grey.shade200,
                                     contentPadding: const EdgeInsets.all(18),
@@ -100,7 +108,7 @@ class AddTaskView extends StatelessWidget {
                                       borderSide: BorderSide.none,
                                     ),
                                     filled: true,
-                                    fillColor: isDarkMode
+                                    fillColor: themeController.isDarkMode.value
                                         ? Colors.grey.shade900
                                         : Colors.grey.shade200,
                                     contentPadding: const EdgeInsets.all(18),
@@ -122,8 +130,9 @@ class AddTaskView extends StatelessWidget {
                         : 'Create Task',
                     onPressed: () {
                       if (taskController.isCreatingTask.value ||
-                          taskController.isGenerating.value)
+                          taskController.isGenerating.value) {
                         return;
+                      }
                       if (formKey.currentState?.validate() == true) {
                         AnalyticsService.logCreateTaskButtonTap();
                         taskController.addTask(

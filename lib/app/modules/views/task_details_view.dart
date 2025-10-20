@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
 import 'package:lets_do_it/app/controllers/task_controller.dart';
+import 'package:lets_do_it/app/utils/utils.dart';
 import 'package:lets_do_it/app/widgets/expanded_button.dart';
 
 class TaskDetailsView extends StatelessWidget {
@@ -27,20 +28,14 @@ class TaskDetailsView extends StatelessWidget {
           IconButton(
             icon: const Icon(Icons.delete),
             onPressed: () async {
-              final confirm = await showDialog<bool>(
-                context: context,
-                builder: (_) => AlertDialog(
-                  title: const Text("Confirm Delete"),
-                  content: const Text("Are you sure you want to delete this task?"),
-                  actions: [
-                    TextButton(onPressed: () => Get.back(result: false), child: const Text("CANCEL")),
-                    TextButton(onPressed: () => Get.back(result: true), child: const Text("DELETE")),
-                  ],
-                ),
+              final confirm = await Utils.confirmDialog(
+                title: "Confirm Delete",
+                message: "Are you sure you want to delete this task?",
+                confirmText: "DELETE",
               );
-
               if (confirm == true) {
                 await taskController.deleteTask(task);
+                Utils().successToast("Task Deleted!", Get.context!);
                 Get.back(closeOverlays: true);
               }
             },
@@ -54,76 +49,74 @@ class TaskDetailsView extends StatelessWidget {
 
         final formattedDate =
         DateFormat('MMM d, yyyy • hh:mm a').format(t.createdAt);
-        final theme = Theme.of(context);
+        final theme = Theme.of(Get.context!);
         final isDark = theme.brightness == Brightness.dark;
 
         return Padding(
           padding: const EdgeInsets.all(18.0),
-          child: Form(
-            child: Column(
-              children: [
-                Expanded(
-                  child: SingleChildScrollView(
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Hero(
-                          tag: 'title_${t.key}',
-                          child: Material(
-                            color: Colors.transparent,
-                            child: TextFormField(
-                              controller: taskController.titleController,
-                              enabled: taskController.isEditing.value,
-                              style: TextStyle(
-                                color: isDark ? Colors.white : Colors.black,
-                              ),
-                              decoration:
-                              const InputDecoration(labelText: 'Title'),
+          child: Column(
+            children: [
+              Expanded(
+                child: SingleChildScrollView(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Hero(
+                        tag: 'title_${t.key}',
+                        child: Material(
+                          color: Colors.transparent,
+                          child: TextFormField(
+                            controller: taskController.titleController,
+                            enabled: taskController.isEditing.value,
+                            style: TextStyle(
+                              color: isDark ? Colors.white : Colors.black,
                             ),
+                            decoration:
+                            const InputDecoration(labelText: 'Title'),
                           ),
                         ),
-                        const SizedBox(height: 20),
-                        Hero(
-                          tag: 'desc_${t.key}',
-                          child: Material(
-                            color: Colors.transparent,
-                            child: TextFormField(
-                              controller: taskController.descriptionController,
-                              enabled: taskController.isEditing.value,
-                              maxLines: 3,
-                              style: TextStyle(
-                                color: isDark ? Colors.white : Colors.black,
-                              ),
-                              decoration:
-                              const InputDecoration(labelText: 'Description'),
+                      ),
+                      const SizedBox(height: 20),
+                      Hero(
+                        tag: 'desc_${t.key}',
+                        child: Material(
+                          color: Colors.transparent,
+                          child: TextFormField(
+                            controller: taskController.descriptionController,
+                            enabled: taskController.isEditing.value,
+                            maxLines: 3,
+                            style: TextStyle(
+                              color: isDark ? Colors.white : Colors.black,
                             ),
+                            decoration:
+                            const InputDecoration(labelText: 'Description'),
                           ),
                         ),
-                        const SizedBox(height: 30),
-                        Hero(
-                          tag: 'time_${t.key}',
-                          child: Material(
-                            color: Colors.transparent,
-                            child: Text(
-                              'Created: $formattedDate',
-                              style: theme.textTheme.bodyMedium
-                                  ?.copyWith(color: Colors.grey),
-                            ),
+                      ),
+                      const SizedBox(height: 30),
+                      Hero(
+                        tag: 'time_${t.key}',
+                        child: Material(
+                          color: Colors.transparent,
+                          child: Text(
+                            'Created: $formattedDate',
+                            style: theme.textTheme.bodyMedium
+                                ?.copyWith(color: Colors.grey),
                           ),
                         ),
-                      ],
-                    ),
+                      ),
+                    ],
                   ),
                 ),
-                if (taskController.isEditing.value)
-                  ExpandedButton(
-                    text: taskController.isLoading.value
-                        ? 'Updating...'
-                        : 'Update Task',
-                    onPressed: () => taskController.updateTask(),
-                  ),
-              ],
-            ),
+              ),
+              if (taskController.isEditing.value)
+                ExpandedButton(
+                  text: taskController.isLoading.value
+                      ? 'Updating...'
+                      : 'Update Task',
+                  onPressed: () => taskController.updateTask(),
+                ),
+            ],
           ),
         );
       }),

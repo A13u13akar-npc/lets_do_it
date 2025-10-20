@@ -7,7 +7,6 @@ import 'package:lets_do_it/app/utils/utils.dart';
 
 class TaskController extends GetxController {
   final TaskService _service = TaskService();
-
   RxList<TodoTask> get tasks => _service.tasks;
   final RxBool isGenerating = false.obs;
   final RxBool isCreatingTask = false.obs;
@@ -34,6 +33,14 @@ class TaskController extends GetxController {
     descriptionController.clear();
   }
 
+  Future<void> fetchTasks() async {
+    try {
+      await _service.fetchTasks();
+    } catch (e) {
+      Utils().failureToast('Failed to fetch tasks: $e', Get.context!);
+    }
+  }
+
   Future<void> generateWithAI() async {
     isGenerating.value = true;
     try {
@@ -51,6 +58,7 @@ class TaskController extends GetxController {
     required String title,
     required String description,
     required VoidCallback clearFormCallback,
+    bool ignoreLimit = false,
   }) async {
     if (isCreatingTask.value || isGenerating.value) return;
     isCreatingTask.value = true;
@@ -61,11 +69,13 @@ class TaskController extends GetxController {
       await _service.addTask(
         title: title,
         description: description,
-        context: Get.context!,
         clearFormCallback: clearFormCallback,
+        ignoreLimit: ignoreLimit,
       );
-      await fetchTasks();
-      Get.back(result: true);
+      // if (Get.currentRoute != '/watchAd') {
+        await fetchTasks();
+      //   Get.back(result: true);
+      // }
     } catch (e) {
       Utils().failureToast(e.toString(), Get.context!);
     } finally {
@@ -111,7 +121,7 @@ class TaskController extends GetxController {
 
   Future<void> deleteTask(TodoTask task) async {
     try {
-      await _service.deleteTask(task, Get.context!);
+      await _service.deleteTask(task);
       await fetchTasks();
       Utils().successToast("Task Completed!", Get.context!);
     } catch (e) {
@@ -122,13 +132,5 @@ class TaskController extends GetxController {
   void clearForm() {
     titleController.clear();
     descriptionController.clear();
-  }
-
-  Future<void> fetchTasks() async {
-    try {
-      await _service.fetchTasks();
-    } catch (e) {
-      Utils().failureToast('Failed to fetch tasks: $e', Get.context!);
-    }
   }
 }
